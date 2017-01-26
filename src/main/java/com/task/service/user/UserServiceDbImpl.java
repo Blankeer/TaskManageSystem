@@ -23,6 +23,8 @@ public class UserServiceDbImpl implements UserService {
                 || TextUtils.isEmpty(pwd)) {
             return -1;//验证不通过
         }
+        account = account.trim();
+        pwd = pwd.trim();
         User user = userRepository.findByEmail(account);
         if (user != null) {
             if (user.getPwd().equals(pwd)) {
@@ -42,6 +44,8 @@ public class UserServiceDbImpl implements UserService {
                 || TextUtils.isEmpty(pwd)) {
             return false;
         }
+        account = account.trim();
+        pwd = pwd.trim();
         User user = userRepository.findByEmail(account);
         if (user == null) {
             user = new User();
