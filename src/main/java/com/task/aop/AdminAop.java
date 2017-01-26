@@ -19,19 +19,19 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 @Order(10)
 @Configuration
-public class TokenAop {
+public class AdminAop {
     @Autowired
     UserRepository userRepository;
 
     @Autowired
     HttpServletRequest request;
 
-    @Pointcut("execution(* com.task.controller.*.*(..))&&" + "@annotation(com.task.annotation.TokenValid)")
-    public void tokenPointCut() {
+    @Pointcut("execution(* com.task.controller.*.*(..))&&" + "@annotation(com.task.annotation.AdminValid)")
+    public void adminPointCut() {
     }
 
 
-    @Around(value = "tokenPointCut()")
+    @Around(value = "adminPointCut()")
     public Object addTokenToMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         String token = request.getHeader(ProjectConfig.HEAD_TOKEN);
@@ -39,18 +39,9 @@ public class TokenAop {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         User user = userRepository.findByToken(token);
-        if (null == user) {
+        if (null == user || !user.isAdmin()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        injectUserObject(user, args, token);//注射参数user
         return joinPoint.proceed(args);
-    }
-
-    private void injectUserObject(User asUser, Object[] args, Object token) {
-        for (int i = 0; i < args.length; i++)
-            if (args[i] instanceof User) {
-                args[i] = asUser;
-                break;
-            }
     }
 }
