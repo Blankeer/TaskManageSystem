@@ -21,8 +21,18 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Content> contents;
+    @ManyToMany(mappedBy = "users")
+    private Set<Task> tasks;
 
     public User() {
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public Set<Content> getContents() {
