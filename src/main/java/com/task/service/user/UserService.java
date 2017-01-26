@@ -8,6 +8,8 @@ import com.task.bean.User;
 public interface UserService {
     Object login(String account, String pwd);
 
+    boolean register(String account,String pwd);
+
     String getToken(User user);
 
     void clearToken(User user);

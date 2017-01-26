@@ -34,6 +34,23 @@ public class UserServiceDbImpl implements UserService {
     }
 
     @Override
+    public boolean register(String account, String pwd) {
+        if (TextUtils.isEmpty(account)
+                || TextUtils.isEmpty(pwd)) {
+            return false;
+        }
+        User user = userRepository.findByEmail(account);
+        if (user == null) {
+            user = new User();
+            user.setEmail(account);
+            user.setPwd(pwd);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public String getToken(User user) {
         return Md5Utils.md5(new Random().nextInt(1024) + user.getEmail()
                 + System.currentTimeMillis());

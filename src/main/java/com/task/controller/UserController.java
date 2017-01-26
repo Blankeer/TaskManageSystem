@@ -25,11 +25,21 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Object login(@RequestBody LoginRequest request) {
-        Object obj = userService.login(request.getAccount(), request.getPwd());
+    public ResponseEntity login(@RequestBody LoginRequest request) {
+        Object obj = userService.login(request.getEmail(), request.getPwd());
         if (obj != null && obj instanceof User) {
-            return obj;
+            return ResponseEntity.ok(obj);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity register(@RequestBody LoginRequest request) {
+        // TODO: 17-1-26 验证
+        boolean res = userService.register(request.getEmail(), request.getPwd());
+        if (!res) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
