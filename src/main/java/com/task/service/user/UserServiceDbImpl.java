@@ -58,6 +58,18 @@ public class UserServiceDbImpl implements UserService {
     }
 
     @Override
+    public boolean logout(String token) {
+        if (!TextUtils.isEmpty(token)) {
+            User user = userRepository.findByToken(token);
+            if (user != null) {
+                clearToken(user);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public String getToken(User user) {
         return Md5Utils.md5(new Random().nextInt(1024) + user.getEmail()
                 + System.currentTimeMillis());

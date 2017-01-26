@@ -3,13 +3,17 @@ package com.task.controller;
 import com.task.bean.User;
 import com.task.bean.request.LoginRequest;
 import com.task.bean.response.BaseMessageResponse;
+import com.task.config.Config;
 import com.task.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by blanke on 17-1-25.
@@ -53,5 +57,12 @@ public class UserController {
                     new BaseMessageResponse("用户已存在"), HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity logout(HttpServletRequest request) {
+        String token = request.getHeader(Config.HEAD_TOKEN);
+        userService.logout(token);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

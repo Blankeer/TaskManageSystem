@@ -8,7 +8,9 @@ import com.task.bean.User;
 public interface UserService {
     Object login(String account, String pwd);
 
-    boolean register(String account,String pwd);
+    boolean register(String account, String pwd);
+
+    boolean logout(String token);
 
     String getToken(User user);
 
