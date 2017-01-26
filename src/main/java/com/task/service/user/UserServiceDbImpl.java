@@ -1,0 +1,52 @@
+package com.task.service.user;
+
+import com.task.bean.User;
+import com.task.repository.UserRepository;
+import com.task.utils.Md5Utils;
+import com.task.utils.TextUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Random;
+
+/**
+ * Created by blanke on 17-1-25.
+ */
+@Service
+public class UserServiceDbImpl implements UserService {
+    @Autowired
+    UserRepository userRepository;
+
+    @Override
+    public Object login(String account, String pwd) {
+        if (TextUtils.isEmpty(account)
+                || TextUtils.isEmpty(pwd)) {
+            return -1;
+        }
+        User user = userRepository.findByEmail(account);
+        if (user != null && user.getPwd().equals(pwd)) {
+            user.setToken(getToken(user));
+            userRepository.save(user);
+            user.setPwd("");
+            return user;
+        }
+        return null;
+    }
+
+    @Override
+    public String getToken(User user) {
+        return Md5Utils.md5(new Random().nextInt(1024) + user.getEmail()
+                + System.currentTimeMillis());
+    }
+
+    @Override
+    public void clearToken(User user) {
+        user.setToken("");
+        userRepository.save(user);
+    }
+
+    @Override
+    public String test() {
+        return "3242343";
+    }
+}

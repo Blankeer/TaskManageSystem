@@ -1,0 +1,16 @@
+package com.task.service.user;
+
+import com.task.bean.User;
+
+/**
+ * Created by blanke on 17-1-25.
+ */
+public interface UserService {
+    Object login(String account, String pwd);
+
+    String getToken(User user);
+
+    void clearToken(User user);
+
+    String test();
+}
