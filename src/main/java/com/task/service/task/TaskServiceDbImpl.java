@@ -1,9 +1,14 @@
 package com.task.service.task;
 
+import com.task.bean.Field;
 import com.task.bean.Task;
 import com.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by blanke on 17-1-27.
@@ -27,5 +32,25 @@ public class TaskServiceDbImpl implements TaskService {
             return taskRepository.save(oldTask);
         }
         return null;
+    }
+
+    @Override
+    public boolean deleteTask(int id) {
+        taskRepository.delete(id);
+        return true;
+    }
+
+    @Override
+    public List<Field> getFields(int tid) {
+        Task task = taskRepository.findOne(tid);
+        List<Field> fields = new ArrayList<>();
+        if (task != null) {
+            Set<Field> fields1 = task.getFields();
+            for (Field field : fields1) {
+                field.setTask(null);
+                fields.add(field);
+            }
+        }
+        return fields;
     }
 }

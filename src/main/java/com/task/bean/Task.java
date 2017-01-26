@@ -1,5 +1,7 @@
 package com.task.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -13,7 +15,8 @@ public class Task {
     private int id;
     private String title;
     private String description;
-    @OneToMany
+    @JsonIgnore
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Field> fields;
 
     public Task() {

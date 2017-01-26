@@ -4,10 +4,7 @@ import com.task.bean.Task;
 import com.task.service.task.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by blanke on 17-1-27.
@@ -33,5 +30,20 @@ public class TaskController {
             return ResponseEntity.ok(newTask);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    //    @AdminValid
+    @DeleteMapping("/tasks/{id}")
+    public ResponseEntity deleteTask(@PathVariable int id) {
+        // TODO: 17-1-27 验证
+        taskService.deleteTask(id);
+        return ResponseEntity.ok().build();
+    }
+
+    //    @AdminValid
+    @GetMapping("/tasks/{id}/fields")
+    public ResponseEntity getTaskFields(@PathVariable int id) {
+        // TODO: 17-1-27 验证
+        return ResponseEntity.ok(taskService.getFields(id));
     }
 }
