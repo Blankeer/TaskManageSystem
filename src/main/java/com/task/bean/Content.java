@@ -11,13 +11,13 @@ public class Content {
     @Id
     @GeneratedValue
     private int id;
-    @OneToOne
+    @ManyToOne
     private Task task;
-    @OneToOne
+    @ManyToOne
     private User user;
     private boolean isSubmit;
     private boolean isVerify;
-    @OneToMany
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL)
     private Set<ContentItem> items;
 
     public Content() {

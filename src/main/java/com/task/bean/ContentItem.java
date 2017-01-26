@@ -1,9 +1,6 @@
 package com.task.bean;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 /**
  * Created by blanke on 17-1-25.
@@ -13,7 +10,7 @@ public class ContentItem {
     @Id
     @GeneratedValue
     private int id;
-    @OneToOne
+    @ManyToOne
     private Content content;
     @OneToOne
     private Field field;

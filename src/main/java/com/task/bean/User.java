@@ -1,8 +1,9 @@
 package com.task.bean;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by blanke on 17-1-25.
@@ -17,8 +18,19 @@ public class User {
     private String nickName;
     private boolean isAdmin;
     private String token;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Content> contents;
 
     public User() {
+    }
+
+    public Set<Content> getContents() {
+        return contents;
+    }
+
+    public void setContents(Set<Content> contents) {
+        this.contents = contents;
     }
 
     public String getToken() {

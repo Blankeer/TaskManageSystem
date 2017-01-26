@@ -18,8 +18,20 @@ public class Task {
     @JsonIgnore
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Field> fields;
+    @JsonIgnore
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Content> contents;
+
 
     public Task() {
+    }
+
+    public Set<Content> getContents() {
+        return contents;
+    }
+
+    public void setContents(Set<Content> contents) {
+        this.contents = contents;
     }
 
     public Set<Field> getFields() {
