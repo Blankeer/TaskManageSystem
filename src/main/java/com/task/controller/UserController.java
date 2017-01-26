@@ -1,5 +1,6 @@
 package com.task.controller;
 
+import com.task.annotation.TokenValid;
 import com.task.bean.User;
 import com.task.bean.request.LoginRequest;
 import com.task.bean.response.BaseMessageResponse;
@@ -59,6 +60,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @TokenValid
     @GetMapping("/logout")
     public ResponseEntity logout(HttpServletRequest request) {
         String token = request.getHeader(Config.HEAD_TOKEN);
