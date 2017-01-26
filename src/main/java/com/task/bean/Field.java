@@ -1,9 +1,6 @@
 package com.task.bean;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * Created by blanke on 17-1-25.
@@ -17,8 +14,18 @@ public class Field {
     private String description;
     @ManyToOne
     private Config config;
+    @ManyToOne
+    private Task task;
 
     public Field() {
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     public Config getConfig() {
