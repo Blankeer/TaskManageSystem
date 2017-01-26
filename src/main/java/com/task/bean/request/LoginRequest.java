@@ -4,18 +4,18 @@ package com.task.bean.request;
  * Created by blanke on 17-1-25.
  */
 public class LoginRequest {
-    private String account;
+    private String email;
     private String pwd;
 
     public LoginRequest() {
     }
 
-    public String getAccount() {
-        return account;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPwd() {
