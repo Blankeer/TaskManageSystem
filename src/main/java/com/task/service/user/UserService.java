@@ -13,6 +13,4 @@ public interface UserService {
     String getToken(User user);
 
     void clearToken(User user);
-
-    String test();
 }

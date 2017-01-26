@@ -21,16 +21,19 @@ public class UserServiceDbImpl implements UserService {
     public Object login(String account, String pwd) {
         if (TextUtils.isEmpty(account)
                 || TextUtils.isEmpty(pwd)) {
-            return -1;
+            return -1;//验证不通过
         }
         User user = userRepository.findByEmail(account);
-        if (user != null && user.getPwd().equals(pwd)) {
-            user.setToken(getToken(user));
-            userRepository.save(user);
-            user.setPwd("");
-            return user;
+        if (user != null) {
+            if (user.getPwd().equals(pwd)) {
+                user.setToken(getToken(user));
+                userRepository.save(user);
+                user.setPwd("");
+                return user;
+            }
+            return -2;//密码不正确
         }
-        return null;
+        return -3;//不存在该用户
     }
 
     @Override
@@ -60,10 +63,5 @@ public class UserServiceDbImpl implements UserService {
     public void clearToken(User user) {
         user.setToken("");
         userRepository.save(user);
-    }
-
-    @Override
-    public String test() {
-        return "3242343";
     }
 }
