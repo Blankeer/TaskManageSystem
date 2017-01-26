@@ -46,7 +46,7 @@ public class UserServiceDbImpl implements UserService {
         if (user == null) {
             user = new User();
             user.setEmail(account);
-            user.setPwd(pwd);
+            user.setPwd(Md5Utils.md5(pwd));
             userRepository.save(user);
             return true;
         }
