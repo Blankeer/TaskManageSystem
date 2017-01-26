@@ -14,6 +14,8 @@ public interface UserService {
 
     boolean changePwd(User user, String oldPwd, String newPwd);
 
+    void setNiceName(User user, String nickName);
+
     String getToken(User user);
 
     void clearToken(User user);

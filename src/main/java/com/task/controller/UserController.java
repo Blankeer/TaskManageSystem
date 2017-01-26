@@ -78,4 +78,17 @@ public class UserController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @TokenValid
+    @PutMapping("/change_nickname")
+    public ResponseEntity changeNickname(User user,
+                                         @RequestParam(name = "nickname")
+                                                 String nickname) {
+        if (TextUtils.isEmpty(nickname)) {
+            // TODO: 17-1-27 昵称验证
+            return ResponseEntity.badRequest().body("昵称不规范");
+        }
+        userService.setNiceName(user, nickname);
+        return ResponseEntity.ok().build();
+    }
 }

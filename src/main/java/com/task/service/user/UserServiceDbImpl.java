@@ -74,6 +74,12 @@ public class UserServiceDbImpl implements UserService {
     }
 
     @Override
+    public void setNiceName(User user, String nickName) {
+        user.setNickName(nickName);
+        userRepository.save(user);
+    }
+
+    @Override
     public String getToken(User user) {
         return Md5Utils.md5(new Random().nextInt(1024) + user.getEmail()
                 + System.currentTimeMillis());
