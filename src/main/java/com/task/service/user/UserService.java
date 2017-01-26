@@ -10,7 +10,9 @@ public interface UserService {
 
     boolean register(String account, String pwd);
 
-    boolean logout(String token);
+    boolean logout(User user);
+
+    boolean changePwd(User user, String oldPwd, String newPwd);
 
     String getToken(User user);
 

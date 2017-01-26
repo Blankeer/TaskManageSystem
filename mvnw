@@ -109,12 +109,12 @@ if [ -z "$M2_HOME" ] ; then
     fi
   done
 
-  saveddir=`pwd`
+  saveddir=`newPwd`
 
   M2_HOME=`dirname "$PRG"`/..
 
   # make it fully qualified
-  M2_HOME=`cd "$M2_HOME" && pwd`
+  M2_HOME=`cd "$M2_HOME" && newPwd`
 
   cd "$saveddir"
   # echo Using m2 at $M2_HOME
@@ -133,9 +133,9 @@ fi
 # For Migwn, ensure paths are in UNIX format before anything is touched
 if $mingw ; then
   [ -n "$M2_HOME" ] &&
-    M2_HOME="`(cd "$M2_HOME"; pwd)`"
+    M2_HOME="`(cd "$M2_HOME"; newPwd)`"
   [ -n "$JAVA_HOME" ] &&
-    JAVA_HOME="`(cd "$JAVA_HOME"; pwd)`"
+    JAVA_HOME="`(cd "$JAVA_HOME"; newPwd)`"
   # TODO classpath?
 fi
 
@@ -147,7 +147,7 @@ if [ -z "$JAVA_HOME" ]; then
     if [ ! `expr "$readLink" : '\([^ ]*\)'` = "no" ]; then
       if $darwin ; then
         javaHome="`dirname \"$javaExecutable\"`"
-        javaExecutable="`cd \"$javaHome\" && pwd -P`/javac"
+        javaExecutable="`cd \"$javaHome\" && newPwd -P`/javac"
       else
         javaExecutable="`readlink -f \"$javaExecutable\"`"
       fi
@@ -197,14 +197,14 @@ fi
 # traverses directory structure from process work directory to filesystem root
 # first directory with .mvn subdirectory is considered project base directory
 find_maven_basedir() {
-  local basedir=$(pwd)
-  local wdir=$(pwd)
+  local basedir=$(newPwd)
+  local wdir=$(newPwd)
   while [ "$wdir" != '/' ] ; do
     if [ -d "$wdir"/.mvn ] ; then
       basedir=$wdir
       break
     fi
-    wdir=$(cd "$wdir/.."; pwd)
+    wdir=$(cd "$wdir/.."; newPwd)
   done
   echo "${basedir}"
 }

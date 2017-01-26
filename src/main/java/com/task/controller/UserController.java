@@ -2,19 +2,15 @@ package com.task.controller;
 
 import com.task.annotation.TokenValid;
 import com.task.bean.User;
+import com.task.bean.request.ChangePwdRequest;
 import com.task.bean.request.LoginRequest;
 import com.task.bean.response.BaseMessageResponse;
-import com.task.config.Config;
 import com.task.service.user.UserService;
+import com.task.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by blanke on 17-1-25.
@@ -62,9 +58,24 @@ public class UserController {
 
     @TokenValid
     @GetMapping("/logout")
-    public ResponseEntity logout(HttpServletRequest request) {
-        String token = request.getHeader(Config.HEAD_TOKEN);
-        userService.logout(token);
+    public ResponseEntity logout(User user) {
+        userService.logout(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @TokenValid
+    @PutMapping("/change_pwd")
+    public ResponseEntity changePwd(User user, @RequestBody ChangePwdRequest request) {
+        if (TextUtils.isEmpty(request.getOldPwd())
+                || TextUtils.isEmpty(request.getNewPwd())) {
+            // TODO: 17-1-27 密码验证
+            return ResponseEntity.badRequest().body("旧密码或新密码为空");
+        }
+        boolean res = userService.changePwd(user, request.getOldPwd().trim(),
+                request.getNewPwd().trim());
+        if (!res) {
+            return ResponseEntity.badRequest().body("旧密码错误");
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

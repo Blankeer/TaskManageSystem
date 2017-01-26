@@ -58,13 +58,17 @@ public class UserServiceDbImpl implements UserService {
     }
 
     @Override
-    public boolean logout(String token) {
-        if (!TextUtils.isEmpty(token)) {
-            User user = userRepository.findByToken(token);
-            if (user != null) {
-                clearToken(user);
-                return true;
-            }
+    public boolean logout(User user) {
+        clearToken(user);
+        return true;
+    }
+
+    @Override
+    public boolean changePwd(User user, String oldPwd, String newPwd) {
+        if (user.getPwd().equals(Md5Utils.md5(oldPwd))) {
+            user.setPwd(Md5Utils.md5(newPwd));
+            userRepository.save(user);
+            return true;
         }
         return false;
     }
