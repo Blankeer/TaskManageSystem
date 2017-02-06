@@ -37,7 +37,7 @@ public class UserController {
                             new BaseMessageResponse("密码不正确"), HttpStatus.BAD_REQUEST);
                 } else {
                     res = new ResponseEntity<>(
-                            new BaseMessageResponse("用户不存在"), HttpStatus.BAD_REQUEST);
+                            new BaseMessageResponse("用户不存在"), HttpStatus.NOT_FOUND);
                 }
                 return res;
             }
