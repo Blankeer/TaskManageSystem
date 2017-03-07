@@ -1,6 +1,8 @@
 package com.task.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -12,8 +14,11 @@ import java.util.Set;
 public class Task {
     @Id
     @GeneratedValue
+    @JsonView(DataTablesOutput.View.class)
     private int id;
+    @JsonView(DataTablesOutput.View.class)
     private String title;
+    @JsonView(DataTablesOutput.View.class)
     private String description;
     @JsonIgnore
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

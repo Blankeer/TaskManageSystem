@@ -4,6 +4,8 @@ import com.task.bean.Field;
 import com.task.bean.Task;
 import com.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +19,11 @@ import java.util.Set;
 public class TaskServiceDbImpl implements TaskService {
     @Autowired
     TaskRepository taskRepository;
+
+    @Override
+    public DataTablesOutput<Task> getAllTask(DataTablesInput dataTablesInput) {
+        return taskRepository.findAll(dataTablesInput);
+    }
 
     @Override
     public Task addTask(Task task) {
