@@ -1,0 +1,90 @@
+.form-bg{
+    background: #00b4ef;
+}
+.page{
+  width: 450px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+.form{
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    max-width: 550px;
+    margin: 0 auto 100px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.form-horizontal{
+    background: #fff;
+    padding-bottom: 40px;
+    border-radius: 15px;
+    text-align: center;
+}
+.form-horizontal .heading{
+    display: block;
+    font-size: 35px;
+    font-weight: 700;
+    padding: 35px 0;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 30px;
+}
+.form-horizontal .form-group{
+    padding: 0 40px;
+    margin: 0 0 25px 0;
+    position: relative;
+}
+.form-horizontal .input_text{
+    padding: 0 20px 0 45px;
+    height: 40px;
+}
+.form-horizontal .form-group i{
+    position: absolute;
+    top: 12px;
+    left: 60px;
+    font-size: 17px;
+    color: #c8c8c8;
+}
+.form-horizontal .checkbox_label{
+    float: left;
+    margin-left: 3px;
+}
+.form-horizontal .bu_login{
+    float: center;
+    width: 200px;
+    font-size: 14px;
+    padding: 10px 25px;
+    border: none;
+    text-transform: capitalize;
+    transition: all 0.5s ease 0s;
+}
+.form-horizontal .bu_register{
+    float: center;
+    width: 200px;
+    font-size: 14px;
+    padding: 10px 25px;
+    border: none;
+    text-transform: capitalize;
+    transition: all 0.5s ease 0s;
+}
+.register-form {
+  display: none;
+}
+.forget-form{
+  display: none;
+}
+.forget-form-2{
+  display: none;
+}
+.label_forget{
+    float: right;;
+    margin-top: 6px;
+}
+.bu_getcapcha{
+    float:right;
+    height: 40px;
+}
+.text_forget_email{
+    width: 240px;
+}
