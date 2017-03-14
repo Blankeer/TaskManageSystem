@@ -2,6 +2,7 @@ package com.task.service.task;
 
 import com.task.bean.Field;
 import com.task.bean.Task;
+import com.task.bean.User;
 import com.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -9,10 +10,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -26,13 +24,15 @@ public class TaskServiceDbImpl implements TaskService {
     TaskRepository taskRepository;
 
     @Override
-    public DataTablesOutput<Task> getAllTask(DataTablesInput dataTablesInput) {
+    public DataTablesOutput<Task> getAllTask(DataTablesInput dataTablesInput, User user) {
         return taskRepository.findAll(dataTablesInput, new Specification<Task>() {
             @Override
             public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return null;
+                Path<Set<User>> users = root.get("users");
+                return criteriaBuilder.isMember(user, users);
             }
         });
+
     }
 
     @Override

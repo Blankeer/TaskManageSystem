@@ -9,8 +9,6 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
-
 /**
  * Created by blanke on 17-1-27.
  */
@@ -23,13 +21,8 @@ public class TaskController {
 
     @GetMapping("/tasks")
     public ResponseEntity getAllTasks(DataTablesInput input, User user) {
-//        return ResponseEntity.ok(taskService.getAllTask(page, size, sort));
-        if (user == null) {//test
-            user = userRepository.findOne(1);
-        }
-        Set<Task> tasks = user.getTasks();
-
-        return ResponseEntity.ok(taskService.getAllTask(input));
+        user = userRepository.findOne(2);//test
+        return ResponseEntity.ok(taskService.getAllTask(input, user));
     }
 
     //    @AdminValid
