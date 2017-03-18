@@ -35,22 +35,27 @@ public class TokenAop {
     public Object addTokenToMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         String token = request.getHeader(ProjectConfig.HEAD_TOKEN);
+        User user = null;
         if (TextUtils.isEmpty(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        User user = userRepository.findByToken(token);
-        if (null == user) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            // TODO: 2017/3/18 test user
+            user = userRepository.findOne(1);//test
+        } else {
+            user = userRepository.findByToken(token);
+            if (null == user) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
         }
         injectUserObject(user, args, token);//注射参数user
         return joinPoint.proceed(args);
     }
 
     private void injectUserObject(User asUser, Object[] args, Object token) {
-        for (int i = 0; i < args.length; i++)
+        for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof User) {
                 args[i] = asUser;
                 break;
             }
+        }
     }
 }
