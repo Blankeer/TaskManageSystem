@@ -17,15 +17,20 @@ $(document).ready(function () {
             //
             // },
             //每行的显示调整
-            // columnDefs: [
-            //     {
-            //         targets: 5,
-            //         data: "updated_at",
-            //         title: "",
-            //         render: function (data, type, row, meta) {
-            //             return new Date(Date.parse(data)).Format("yyyy-MM-dd hh:mm:ss");
-            //         }
-            //     }],
+            columnDefs: [
+                {
+                    targets: 2,
+                    data: "publishTime",
+                    render: function (data, type, row, meta) {
+                        return formatDate(data);
+                    }
+                }, {
+                    targets: 3,
+                    data: "deadlineTime",
+                    render: function (data, type, row, meta) {
+                        return formatDate(data);
+                    }
+                }],
             // //加载完的Init
             // initComplete: function () {
             // },
@@ -34,8 +39,22 @@ $(document).ready(function () {
             }, {
                 data: 'title'
             }, {
-                data: 'description'
+                data: 'publishTime'
+            }, {
+                data: 'deadlineTime'
             }]
         })
         ;
 });
+function formatDate(time) {
+    if (time == null) {
+        return "不知道什么时间";
+    }
+    var date = new Date(time);
+    var Y = date.getFullYear() + '-';
+    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+    var D = date.getDate() + ' ';
+    var h = date.getHours() + ':';
+    var m = date.getMinutes();
+    return Y + M + D + h + m;
+}

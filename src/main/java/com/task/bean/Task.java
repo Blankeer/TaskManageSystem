@@ -1,10 +1,9 @@
 package com.task.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -14,12 +13,11 @@ import java.util.Set;
 public class Task {
     @Id
     @GeneratedValue
-    @JsonView(DataTablesOutput.View.class)
     private int id;
-    @JsonView(DataTablesOutput.View.class)
     private String title;
-    @JsonView(DataTablesOutput.View.class)
     private String description;
+    private Date publishTime;
+    private Date deadlineTime;
     @JsonIgnore
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Field> fields;
@@ -31,6 +29,22 @@ public class Task {
     private Set<User> users;
 
     public Task() {
+    }
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public Date getDeadlineTime() {
+        return deadlineTime;
+    }
+
+    public void setDeadlineTime(Date deadlineTime) {
+        this.deadlineTime = deadlineTime;
     }
 
     public Set<User> getUsers() {
