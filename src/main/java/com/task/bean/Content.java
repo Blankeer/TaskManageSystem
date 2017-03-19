@@ -1,5 +1,7 @@
 package com.task.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -11,12 +13,15 @@ public class Content {
     @Id
     @GeneratedValue
     private int id;
+    @JsonIgnore
     @ManyToOne
     private Task task;
+    @JsonIgnore
     @ManyToOne
     private User user;
     private boolean isSubmit;
     private boolean isVerify;
+    @JsonIgnore
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL)
     private Set<ContentItem> items;
 
