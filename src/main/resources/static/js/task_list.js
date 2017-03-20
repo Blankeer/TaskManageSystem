@@ -9,42 +9,64 @@ $(document).ready(function () {
     });
 
     var table = $('#table_task_list').DataTable({
-            'ajax': '/tasks',
-            'serverSide': true,
-            // order: [[4, "desc"]],
-            //行被创建回调
-            // createdRow: function (row, data, dataIndex) {
-            //
-            // },
-            //每行的显示调整
-            columnDefs: [
-                {
-                    targets: 2,
-                    data: "publishTime",
-                    render: function (data, type, row, meta) {
-                        return formatDate(data);
-                    }
-                }, {
-                    targets: 3,
-                    data: "deadlineTime",
-                    render: function (data, type, row, meta) {
-                        return formatDate(data);
-                    }
-                }],
-            // //加载完的Init
-            // initComplete: function () {
-            // },
-            columns: [{
-                data: 'id'
-            }, {
+        'ajax': '/tasks',
+        'serverSide': true,
+        // order: [[4, "desc"]],
+        //行被创建回调
+        createdRow: function (row, data, dataIndex) {
+            //请求content状态，显示是否提交，是否审核通过
+            $.get("/content", {task_id: data.id}, function (data, status) {
+                // alert(dataIndex + ":" + data);
+                //todo 根据是否提交，通过css改变颜色等
+                $(row).children().eq(1).text(data.submit);
+                $(row).children().eq(2).text(data.verify);
+            });
+        },
+        //每行的显示调整，主要做了时间戳显示转换
+        columnDefs: [
+            {
+                targets: 0,
                 data: 'title'
             }, {
-                data: 'publishTime'
+                targets: 1,
+                data: null,
+                render: function (data, type, row, meta) {
+                    return "false";
+                }
             }, {
-                data: 'deadlineTime'
+                targets: 2,
+                data: null,
+                render: function (data, type, row, meta) {
+                    return "false";
+                }
+            }, {
+                targets: 3,
+                data: "publishTime",
+                render: function (data, type, row, meta) {
+                    return formatDate(data);
+                }
+            }, {
+                targets: 4,
+                data: "deadlineTime",
+                render: function (data, type, row, meta) {
+                    return formatDate(data);
+                }
             }]
-        })
-        ;
+        // //加载完的Init
+        // initComplete: function () {
+        // },
+        // columns: [{
+        //     data: 'title'
+        // }, {
+        //     data: null
+        // }, {
+        //     data: null
+        // }, {
+        //     data: 'publishTime'
+        // }, {
+        //     data: 'deadlineTime'
+        // }]
+    });
 });
 function formatDate(time) {
     if (time == null) {
