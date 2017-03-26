@@ -7,10 +7,8 @@ import com.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,14 +23,14 @@ public class TaskServiceDbImpl implements TaskService {
 
     @Override
     public DataTablesOutput<Task> getAllTask(DataTablesInput dataTablesInput, User user) {
-        return taskRepository.findAll(dataTablesInput, new Specification<Task>() {
-            @Override
-            public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                Path<Set<User>> users = root.get("users");
-                return criteriaBuilder.isMember(user, users);
-            }
-        });
-
+//        return taskRepository.findAll(dataTablesInput, new Specification<Task>() {
+//            @Override
+//            public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+//                Path<Set<User>> users = root.get("users");
+//                return criteriaBuilder.isMember(user, users);
+//            }
+//        });
+        return taskRepository.findAll(dataTablesInput);
     }
 
     @Override
