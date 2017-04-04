@@ -2,8 +2,10 @@ package com.task.controller;
 
 import com.task.annotation.AdminValid;
 import com.task.annotation.TokenValid;
+import com.task.bean.Field;
 import com.task.bean.Task;
 import com.task.bean.User;
+import com.task.bean.response.FieldDetailResponse;
 import com.task.bean.response.TaskListResponse;
 import com.task.repository.TaskRepository;
 import com.task.repository.UserRepository;
@@ -65,6 +67,16 @@ public class TaskController {
         return ResponseEntity.ok(result);
     }
 
+    @TokenValid
+    @GetMapping("/task/{task_id}")
+    public ResponseEntity getTask(@PathVariable(value = "task_id") int taskId) {
+        Task task = taskRepository.findOne(taskId);
+        if (task == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(task);
+    }
+
     @AdminValid
     @PostMapping("/tasks")
     public ResponseEntity addTask(@RequestBody Task task) {
@@ -95,6 +107,15 @@ public class TaskController {
     @GetMapping("/tasks/{id}/fields")
     public ResponseEntity getTaskFields(@PathVariable int id) {
         // TODO: 17-1-27 验证
-        return ResponseEntity.ok(taskService.getFields(id));
+        Task task = taskRepository.findOne(id);
+        List<FieldDetailResponse> fields = new ArrayList<>();
+        if (task != null) {
+            Set<Field> fields1 = task.getFields();
+            for (Field field : fields1) {
+                fields.add(FieldDetailResponse.wrap(field));
+            }
+            return ResponseEntity.ok(fields);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

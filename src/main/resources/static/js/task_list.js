@@ -22,6 +22,10 @@ $(document).ready(function () {
                 $(row).children().eq(1).text(data.submit);
                 $(row).children().eq(2).text(data.verify);
             });
+            $(row).click(function () {
+                localStorage.setItem('click_task_id', data.id);
+                $('#menuFrame', parent.document.body).attr('src', 'task_detail.html')
+            });
         },
         //每行的显示调整，主要做了时间戳显示转换
         columnDefs: [
@@ -52,10 +56,11 @@ $(document).ready(function () {
                 render: function (data, type, row, meta) {
                     return formatDate(data);
                 }
-            }]
-        // //加载完的Init
-        // initComplete: function () {
-        // },
+            }],
+        //加载完的Init
+        initComplete: function () {
+            $('tr').css('background-color', 'rgba(0,0,0,0)');
+        },
         // columns: [{
         //     data: 'title'
         // }, {

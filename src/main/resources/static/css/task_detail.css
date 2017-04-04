@@ -1,0 +1,17 @@
+body {
+    padding: 10px;
+}
+#back {
+    margin: 10px;
+}
+.attr_div {
+    margin: 10px;
+}
+.attr_title {
+
+}
+.attr_value{
+    width: 200px;
+    margin-left: 10px;
+    display: inline-block;
+}
