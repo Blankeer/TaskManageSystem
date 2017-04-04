@@ -1,3 +1,28 @@
 body {
-    background: #f7f5fa;
+    padding: 20px;
+    background-color: #f7f5fa;
+}
+
+th {
+    background-color: #f5f8fc;
+    text-align: center;
+}
+
+tr {
+    background-color: rgba(0, 0, 0, 0);
+    text-align: center;
+    cursor: pointer;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px;
+}
+
+tr:hover {
+    background-color: #000;
+}
+
+#table_task_list {
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px;
 }

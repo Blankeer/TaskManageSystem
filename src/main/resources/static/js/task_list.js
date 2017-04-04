@@ -11,6 +11,7 @@ $(document).ready(function () {
     var table = $('#table_task_list').DataTable({
         'ajax': '/tasks',
         'serverSide': true,
+        "ordering": false,
         // order: [[4, "desc"]],
         //行被创建回调
         createdRow: function (row, data, dataIndex) {
