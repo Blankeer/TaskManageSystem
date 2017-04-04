@@ -20,7 +20,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping("/login")
+    @PostMapping("/login/$")
     public ResponseEntity login(@RequestBody LoginRequest request) {
         Object obj = userService.login(request.getEmail(), request.getPwd());
         if (obj != null) {
