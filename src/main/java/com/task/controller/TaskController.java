@@ -2,11 +2,14 @@ package com.task.controller;
 
 import com.task.annotation.AdminValid;
 import com.task.annotation.TokenValid;
+import com.task.bean.Content;
 import com.task.bean.Field;
 import com.task.bean.Task;
 import com.task.bean.User;
+import com.task.bean.response.ContentDetailResponse;
 import com.task.bean.response.FieldDetailResponse;
 import com.task.bean.response.TaskListResponse;
+import com.task.repository.ContentRepository;
 import com.task.repository.TaskRepository;
 import com.task.repository.UserRepository;
 import com.task.service.task.TaskService;
@@ -35,6 +38,8 @@ public class TaskController {
     UserRepository userRepository;
     @Autowired
     TaskRepository taskRepository;
+    @Autowired
+    ContentRepository contentRepository;
 
     @TokenValid
     @GetMapping("/tasks")
@@ -115,6 +120,21 @@ public class TaskController {
                 fields.add(FieldDetailResponse.wrap(field));
             }
             return ResponseEntity.ok(fields);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @TokenValid
+    @GetMapping("/tasks/{id}/contents")
+    public ResponseEntity getTaskContents(@PathVariable int id, User user) {
+        Task task = taskRepository.findOne(id);
+        List<ContentDetailResponse> contents = new ArrayList<>();
+        if (task != null) {
+            List<Content> sets = contentRepository.findByTaskAndUser(task, user);
+            for (Content item : sets) {
+                contents.add(ContentDetailResponse.wrap(item));
+            }
+            return ResponseEntity.ok(contents);
         }
         return ResponseEntity.notFound().build();
     }

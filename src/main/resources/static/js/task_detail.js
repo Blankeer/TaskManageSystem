@@ -13,10 +13,19 @@ $(function () {
             $('#task_start_time').val(data.publishTime);
             $('#task_end_time').val(data.deadlineTime);
             //get task fields
+            var fields = $('#field_div');
             $.get('/tasks/' + task_id + '/fields', function (data) {
-                console.log(data)
+                for (i in data) {
+                    item = data[i];
+                    fields.append("<span>" + item.name + "</span>")
+                }
+                $.get('/tasks/' + task_id + '/contents', function (data) {
+                    for (i in data) {
+                        item = data[i];
 
-            })
+                    }
+                });
+            });
         });
     }
 })
