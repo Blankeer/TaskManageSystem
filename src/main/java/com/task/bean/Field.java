@@ -1,6 +1,10 @@
 package com.task.bean;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import java.util.regex.Pattern;
 
 /**
  * Created by blanke on 17-1-25.
@@ -18,6 +22,25 @@ public class Field {
     private Task task;
 
     public Field() {
+    }
+
+    public boolean verify(String content) {
+        return Pattern.matches(config.getExpression(), content);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Field field = (Field) o;
+
+        return id == field.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 
     public Task getTask() {

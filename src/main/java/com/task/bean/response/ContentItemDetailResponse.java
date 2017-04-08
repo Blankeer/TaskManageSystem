@@ -7,7 +7,7 @@ import com.task.bean.ContentItem;
  */
 public class ContentItemDetailResponse {
     public int id;
-    public FieldSimpleResponse field;
+    public FieldDetailResponse field;
     public String value;
     public boolean isVerify;
 
@@ -16,7 +16,7 @@ public class ContentItemDetailResponse {
         response.id = contentItem.getId();
         response.value = contentItem.getValue();
         response.isVerify = contentItem.isVerify();
-        response.field = FieldSimpleResponse.wrap(contentItem.getField());
+        response.field = FieldDetailResponse.wrap(contentItem.getField());
         return response;
     }
 }

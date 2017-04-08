@@ -3,7 +3,7 @@ package com.task.bean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by blanke on 17-1-25.
@@ -23,16 +23,16 @@ public class Content {
     private boolean isVerify;
     @JsonIgnore
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL)
-    private Set<ContentItem> items;
+    private List<ContentItem> items;
 
     public Content() {
     }
 
-    public Set<ContentItem> getItems() {
+    public List<ContentItem> getItems() {
         return items;
     }
 
-    public void setItems(Set<ContentItem> items) {
+    public void setItems(List<ContentItem> items) {
         this.items = items;
     }
 

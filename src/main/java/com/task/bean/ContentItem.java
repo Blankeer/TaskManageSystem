@@ -20,6 +20,26 @@ public class ContentItem {
     public ContentItem() {
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ContentItem that = (ContentItem) o;
+        if (getId() > 0 && that.getId() == getId()) {
+            return true;
+        }
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        return field != null ? field.equals(that.field) : that.field == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = content != null ? content.hashCode() : 0;
+        result = 31 * result + (field != null ? field.hashCode() : 0);
+        return result;
+    }
+
     public int getId() {
         return id;
     }
