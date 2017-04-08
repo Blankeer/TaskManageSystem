@@ -3,6 +3,7 @@ package com.task.bean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,11 +22,20 @@ public class Content {
     private User user;
     private boolean isSubmit;
     private boolean isVerify;
+    private Date updatedAt;
     @JsonIgnore
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL)
     private List<ContentItem> items;
 
     public Content() {
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public List<ContentItem> getItems() {

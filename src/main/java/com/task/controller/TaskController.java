@@ -25,10 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by blanke on 17-1-27.
@@ -235,6 +232,7 @@ public class TaskController {
             return ResponseEntity.status(status)
                     .body(new BaseMessageResponse(failMsg));
         }
+        content.setUpdatedAt(new Date());
         content.setItems(new ArrayList<>(contentItems));
         contentRepository.save(content);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -317,6 +315,7 @@ public class TaskController {
                     .body(new BaseMessageResponse(failMsg));
         }
         content.setItems(new ArrayList<>(contentItems));
+        content.setUpdatedAt(new Date());
         contentRepository.save(content);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ContentDetailResponse.wrap(content));
