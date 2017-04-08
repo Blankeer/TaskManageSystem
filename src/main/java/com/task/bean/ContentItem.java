@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by blanke on 17-1-25.
  */
 @Entity
-public class ContentItem {
+public class ContentItem implements Comparable<ContentItem> {
     @Id
     @GeneratedValue
     private int id;
@@ -78,5 +78,10 @@ public class ContentItem {
 
     public void setVerify(boolean verify) {
         isVerify = verify;
+    }
+
+    @Override
+    public int compareTo(ContentItem o) {
+        return field.getId() - o.getField().getId();
     }
 }

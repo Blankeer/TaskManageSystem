@@ -3,6 +3,7 @@ package com.task.bean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class Content {
     }
 
     public List<ContentItem> getItems() {
+        Collections.sort(items);
         return items;
     }
 
