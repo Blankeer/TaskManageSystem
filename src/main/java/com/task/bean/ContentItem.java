@@ -82,6 +82,12 @@ public class ContentItem implements Comparable<ContentItem> {
 
     @Override
     public int compareTo(ContentItem o) {
+        if (field == null) {
+            return -1;
+        }
+        if (o.getField() == null) {
+            return 1;
+        }
         return field.getId() - o.getField().getId();
     }
 }

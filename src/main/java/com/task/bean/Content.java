@@ -25,7 +25,7 @@ public class Content {
     private boolean isVerify;
     private Date updatedAt;
     @JsonIgnore
-    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<ContentItem> items;
 
     public Content() {
