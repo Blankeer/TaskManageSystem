@@ -11,7 +11,9 @@ body {
 
 }
 .attr_value{
-    width: 200px;
+    width: auto;
+    min-width: 100px;
+    max-width: 300px;
     margin-left: 10px;
     display: inline-block;
 }

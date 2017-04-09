@@ -8,29 +8,57 @@
     <link rel="stylesheet" href="../css/task_detail.css" type="text/css"/>
 
     <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.tools.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/task_detail.js"></script>
 </head>
 <body>
 <button id="back" class="btn btn-primary">返回</button>
 <br>
-<div class="attr_div">
-    <span class="attr_title">名称</span>
-    <input id="task_title" class="form-control input_text attr_value">
-</div>
-<div class="attr_div">
-    <span class="attr_title">备注</span>
-    <input id="task_desc" class="form-control input_text attr_value" type="text">
-</div>
-<div class="attr_div">
-    <span class="attr_title">发布时间</span>
-    <input id="task_start_time" class="form-control input_text attr_value" type="datetime">
-</div>
-<div class="attr_div">
-    <span class="attr_title">截止时间</span>
-    <input id="task_end_time" class="form-control input_text attr_value" type="datetime">
-</div>
+<fieldset disabled>
+    <div class="attr_div">
+        <span class="attr_title">名称</span>
+        <input id="task_title" class="form-control input_text attr_value">
+    </div>
+    <div class="attr_div">
+        <span class="attr_title">发布时间</span>
+        <input id="task_start_time" class="form-control input_text attr_value" type="datetime">
+    </div>
+    <div class="attr_div">
+        <span class="attr_title">截止时间</span>
+        <input id="task_end_time" class="form-control input_text attr_value" type="datetime">
+    </div>
+    <div class="attr_div">
+        <span class="attr_title">备注</span>
+        <input id="task_desc" class="form-control input_text attr_value" type="text">
+    </div>
+</fieldset>
+<button id="add_content_row" class="btn btn-success"> 新增</button>
 <div id="field_div">
+
+</div>
+<div id="contents_div">
+
+</div>
+<div id="content_row_template" style="margin: 10px;padding:10px;text-align: center;">
+    已保存:<span class="content_row_save">false</span>
+    已提交:<span class="content_row_submit">false</span>
+    已审核:<span class="content_row_verify">false</span>
+    <div class="div_content">
+        <div style="width: auto;display: inline-block;margin: 5px" class="content_item">
+            <div class="div_content_field" data-toggle="tooltip" style="margin: 5px;">
+                字段名称
+            </div>
+            <div class="div_content_value" style="margin: 5px;">
+                <input class="form-control input_text attr_value content_value" data-toggle="tooltip" type="text">
+            </div>
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary content_save">保存</button>
+        <button class="btn btn-primary content_submit">提交</button>
+        <button class="btn btn-primary btn-danger content_delete">删除</button>
+    </div>
 
 </div>
 </body>
