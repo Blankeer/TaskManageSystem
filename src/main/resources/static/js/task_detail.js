@@ -14,54 +14,59 @@ $(function () {
             $('#task_desc').val(data.description);
             $('#task_start_time').val(data.publishTime);
             $('#task_end_time').val(data.deadlineTime);
-            //get task fields
-            var div_fields = $('#field_div');
-            var div_contents = $('#contents_div');
-            var row_count = 0;
-            //获得任务所有的字段
-            $.get('/tasks/' + task_id + '/fields', function (data) {
-                var data_fields = data;
-                //获得任务内容
-                $.get('/tasks/' + task_id + '/contents', function (data) {
-                    row_count = data.length;
-                    for (var i in data) {
-                        content_row = data[i];
-                        content_row_html = getContentRow(task_id, content_row, i);
-                        div_contents.append(content_row_html);
-                        content_row_html.show();
-                    }
-                    addTipListener();
-                    //新增一条内容
-                    $('#add_content_row').click(function () {
-                        //mock 模拟服务端返回的数据,拼凑类似的 json
-                        var mock_contents = [];
-                        for (var i in data_fields) {
-                            var field = data_fields[i];
-                            mock_contents.push({
-                                "id": 0,
-                                "value": "",
-                                "isVerify": false,
-                                "field": field
-                            })
-                        }
-                        console.log(mock_contents);
-                        content_row = {
+            loadContntData();
+        });
+
+    }
+    //ajax 获得用户提交的数据, 可能是进入页面调用,也可能是删除或提交内容之后调用
+    function loadContntData() {
+        //get task fields
+        var div_fields = $('#field_div');
+        var div_contents = $('#contents_div');
+        div_contents.empty();//删除子元素
+        var row_count = 0;
+        //获得任务所有的字段
+        $.get('/tasks/' + task_id + '/fields', function (data) {
+            var data_fields = data;
+            //获得任务内容
+            $.get('/tasks/' + task_id + '/contents', function (data) {
+                row_count = data.length;
+                for (var i in data) {
+                    content_row = data[i];
+                    content_row_html = getContentRow(task_id, content_row, i);
+                    div_contents.append(content_row_html);
+                    content_row_html.show();
+                }
+                addTipListener();
+                //新增一条内容
+                $('#add_content_row').click(function () {
+                    //mock 模拟服务端返回的数据,拼凑类似的 json
+                    var mock_contents = [];
+                    for (var i in data_fields) {
+                        var field = data_fields[i];
+                        mock_contents.push({
                             "id": 0,
-                            "isSubmit": false,
+                            "value": "",
                             "isVerify": false,
-                            "items": mock_contents
-                        };
-                        console.log(content_row);
-                        content_row_html = getContentRow(task_id, content_row, row_count);
-                        row_count = row_count + 1;
-                        div_contents.append(content_row_html);
-                        content_row_html.show();
-                        addTipListener();
-                    });
+                            "field": field
+                        })
+                    }
+                    content_row = {
+                        "id": 0,
+                        "isSubmit": false,
+                        "isVerify": false,
+                        "items": mock_contents
+                    };
+                    content_row_html = getContentRow(task_id, content_row, row_count);
+                    row_count = row_count + 1;
+                    div_contents.append(content_row_html);
+                    content_row_html.show();
+                    addTipListener();
                 });
             });
         });
     }
+
     //为输入框添加提示监听器,和检测合法监听器
     function addTipListener() {
         //鼠标接触会有小提示
@@ -166,11 +171,19 @@ $(function () {
         bu_save.click(saveSubmitListener);
         bu_submit.click(saveSubmitListener);
         bu_delete.click(function () {
-            //todo dialog 确认
+            var r=confirm("确定删除?");
+            if (r==false){
+                return;
+            }
             if (content.id > 0) {
                 $.delete('/tasks/' + task_id + '/contents/' + content.id, function () {
-
+                    loadContntData();
                 });
+            }else{
+                var div_contents=$('#contents_div')
+                
+                var content_id = getContentRowId(row_index);
+                $('#'+content_id).hide();
             }
         });
         return row_html;
