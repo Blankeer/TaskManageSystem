@@ -5,6 +5,7 @@ import com.task.annotation.TokenValid;
 import com.task.bean.*;
 import com.task.bean.request.ContentItemRequest;
 import com.task.bean.request.ContentRequest;
+import com.task.bean.request.LikeTaskRequest;
 import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.ContentDetailResponse;
 import com.task.bean.response.FieldDetailResponse;
@@ -295,7 +296,7 @@ public class TaskController {
 //                            contentItem.setVerify(false);//未审核
 //                            contentItems.add(contentItem);
                             for (ContentItem item : content.getItems()) {
-                                if(item.getField().equals(field)){
+                                if (item.getField().equals(field)) {
                                     item.setValue(value);
                                     item.setVerify(false);
                                     break;
@@ -345,5 +346,48 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new BaseMessageResponse("任务或内容不存在"));
         }
+    }
+
+    /**
+     * 获得用户收藏的任务列表
+     *
+     * @param user
+     * @return
+     */
+    @TokenValid
+    @GetMapping("/tasks/likes/")
+    public ResponseEntity getAllLikeTasks(User user) {
+        return ResponseEntity.ok(user.getLikeTasks());
+    }
+
+    /**
+     * 添加收藏
+     *
+     * @param request
+     * @param user
+     * @return
+     */
+    @TokenValid
+    @PostMapping("/tasks/likes/")
+    public ResponseEntity addLikeTask(@RequestBody LikeTaskRequest request, User user) {
+        Task task = taskRepository.findOne(request.getTaskId());
+        if (task != null) {
+            user.getLikeTasks().add(task);
+            userRepository.save(user);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @TokenValid
+    @DeleteMapping("/tasks/likes/")
+    public ResponseEntity deleteLikeTask(@RequestBody LikeTaskRequest request, User user) {
+        Task task = taskRepository.findOne(request.getTaskId());
+        if (task != null) {
+            user.getLikeTasks().remove(task);
+            userRepository.save(user);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

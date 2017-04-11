@@ -23,6 +23,8 @@ public class User {
     private Set<Content> contents;
     @ManyToMany(mappedBy = "users")
     private Set<Task> tasks;
+    @ManyToMany
+    private Set<Task> likeTasks;
 
     public User() {
     }
@@ -35,6 +37,14 @@ public class User {
         User user = (User) o;
 
         return id == user.id;
+    }
+
+    public Set<Task> getLikeTasks() {
+        return likeTasks;
+    }
+
+    public void setLikeTasks(Set<Task> likeTasks) {
+        this.likeTasks = likeTasks;
     }
 
     @Override
