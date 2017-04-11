@@ -25,21 +25,6 @@ body {
     height: 50px;
 }
 
-/*管理员设置*/
-.ad_setting {
-    cursor: pointer;
-    border-left: 1px solid #424242;
-    width: 130px;
-    height: 100%;
-    float: right;
-    line-height: 50px;
-}
-
-.ad_setting:hover {
-    text-decoration: none;
-    background: #3E3E3E;
-}
-
 .ad_setting_a {
     text-align: center;
     font-size: 13px;
