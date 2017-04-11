@@ -1,0 +1,19 @@
+body {
+    padding: 10px;
+}
+#back {
+    margin: 10px;
+}
+.attr_div {
+    margin: 10px;
+}
+.attr_title {
+
+}
+.attr_value{
+    width: auto;
+    min-width: 100px;
+    max-width: 300px;
+    margin-left: 10px;
+    display: inline-block;
+}
