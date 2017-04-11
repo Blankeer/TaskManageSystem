@@ -155,15 +155,15 @@ $(function () {
             var content_id = getContentRowId(row_index);
             if (isJsVerify(content_id)) {
                 data = getContentData(content_id);
-                data['submit'] = event.target == bu_submit;
+                data['submit'] = $(this).hasClass('content_submit');
                 var url = '/tasks/' + task_id + '/contents/';
                 if (content.id > 0) {//update
                     $.put(url + content.id, data, function (res) {
-
+                        loadContntData();
                     });
                 } else {
                     $.post(url, data, function (res) {
-
+                        loadContntData();
                     });
                 }
             }
@@ -171,19 +171,19 @@ $(function () {
         bu_save.click(saveSubmitListener);
         bu_submit.click(saveSubmitListener);
         bu_delete.click(function () {
-            var r=confirm("确定删除?");
-            if (r==false){
-                return;
-            }
             if (content.id > 0) {
+                var r = confirm("确定删除?");
+                if (r == false) {
+                    return;
+                }
                 $.delete('/tasks/' + task_id + '/contents/' + content.id, function () {
                     loadContntData();
                 });
-            }else{
-                var div_contents=$('#contents_div')
-                
+            } else {
+                var div_contents = $('#contents_div')
+
                 var content_id = getContentRowId(row_index);
-                $('#'+content_id).hide();
+                $('#' + content_id).hide();
             }
         });
         return row_html;
