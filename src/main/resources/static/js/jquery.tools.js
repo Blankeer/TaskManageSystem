@@ -1,45 +1,36 @@
-$.get = function (url, success, fail) {
-    $.ajax({
-        type: "get",
+$.ajaxx = function (method, url, data, succ, fail) {
+    var params = {
+        type: method,
         url: url,
         contentType: "application/json;charset=UTF-8",
         dataType: "json",
-        success: success,
-        error: fail
-    });
+        data: JSON.stringify(data),
+        success: succ,
+        error: fail,
+        beforeSend: function (req) {
+
+        },
+        complete: function (req) {
+
+        }
+    };
+    if (data == null) {
+        delete params.data;
+    }
+    $.ajax(params);
+};
+$.get = function (url, success, fail) {
+    $.ajaxx('get', url, null, success, fail);
 };
 $.delete = function (url, success, fail) {
-    $.ajax({
-        type: "delete",
-        url: url,
-        contentType: "application/json;charset=UTF-8",
-        dataType: "json",
-        success: success,
-        error: fail
-    });
+    $.ajaxx('delete', url, null, success, fail);
 };
 $.post = function (url, data, success, fail) {
-    $.ajax({
-        type: "post",
-        url: url,
-        contentType: "application/json;charset=UTF-8",
-        dataType: "json",
-        data: JSON.stringify(data),
-        success: success,
-        error: fail
-    });
+    $.ajaxx('post', url, data, success, fail);
 };
-$.put=function (url, data, success, fail) {
-    $.ajax({
-        type: "put",
-        url: url,
-        contentType: "application/json;charset=UTF-8",
-        dataType: "json",
-        data: JSON.stringify(data),
-        success: success,
-        error: fail
-    });
+$.put = function (url, data, success, fail) {
+    $.ajaxx('put', url, data, success, fail);
 };
-$.message=function (msg) {
+$.message = function (msg) {
     $('#alert_message').text(msg);
 };
