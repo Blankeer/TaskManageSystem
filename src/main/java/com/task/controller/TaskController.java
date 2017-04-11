@@ -258,7 +258,7 @@ public class TaskController {
         String failMsg = null;
         HttpStatus status = HttpStatus.CREATED;
         Content content = contentRepository.findOne(contentId);
-        Set<ContentItem> contentItems = new HashSet<>();
+//        Set<ContentItem> contentItems = new HashSet<>();
         if (task != null && content != null) {
             if (!user.equals(content.getUser())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -288,12 +288,19 @@ public class TaskController {
                             status = HttpStatus.BAD_REQUEST;
                             break;
                         } else {
-                            ContentItem contentItem = new ContentItem();
-                            contentItem.setValue(value);
-                            contentItem.setContent(content);
-                            contentItem.setField(field);
-                            contentItem.setVerify(false);//未审核
-                            contentItems.add(contentItem);
+//                            ContentItem contentItem = new ContentItem();
+//                            contentItem.setValue(value);
+//                            contentItem.setContent(content);
+//                            contentItem.setField(field);
+//                            contentItem.setVerify(false);//未审核
+//                            contentItems.add(contentItem);
+                            for (ContentItem item : content.getItems()) {
+                                if(item.getField().equals(field)){
+                                    item.setValue(value);
+                                    item.setVerify(false);
+                                    break;
+                                }
+                            }
                         }
                     }
                 } else {
@@ -306,15 +313,14 @@ public class TaskController {
             failMsg = "任务或内容不存在";
             status = HttpStatus.NOT_FOUND;
         }
-        if (failMsg == null && contentItems.size() != task.getFields().size()) {
-            failMsg = "请提交完整";
-            status = HttpStatus.BAD_REQUEST;
-        }
+//        if (failMsg == null && contentItems.size() != task.getFields().size()) {
+//            failMsg = "请提交完整";
+//            status = HttpStatus.BAD_REQUEST;
+//        }
         if (failMsg != null) {
             return ResponseEntity.status(status)
                     .body(new BaseMessageResponse(failMsg));
         }
-        content.setItems(new ArrayList<>(contentItems));
         content.setUpdatedAt(new Date());
         contentRepository.save(content);
         return ResponseEntity.status(HttpStatus.OK)
