@@ -24,11 +24,23 @@ public class Task {
     @JsonIgnore
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Content> contents;
+    //这个任务的成员列表
     @JsonIgnore
     @ManyToMany
     private Set<User> users;
+    //收藏这个任务的人
+    @ManyToMany(mappedBy = "likeTasks", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<User> likeUsers;
 
     public Task() {
+    }
+
+    public Set<User> getLikeUsers() {
+        return likeUsers;
+    }
+
+    public void setLikeUsers(Set<User> likeUsers) {
+        this.likeUsers = likeUsers;
     }
 
     public Date getPublishTime() {

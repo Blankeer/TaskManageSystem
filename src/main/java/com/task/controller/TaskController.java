@@ -9,12 +9,14 @@ import com.task.bean.request.LikeTaskRequest;
 import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.ContentDetailResponse;
 import com.task.bean.response.FieldDetailResponse;
+import com.task.bean.response.TaskListResponse;
 import com.task.repository.ContentRepository;
 import com.task.repository.FieldRepository;
 import com.task.repository.TaskRepository;
 import com.task.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -322,9 +324,15 @@ public class TaskController {
      * @return
      */
     @TokenValid
-    @GetMapping("/tasks/likes/")
-    public ResponseEntity getAllLikeTasks(User user) {
-        return ResponseEntity.ok(user.getLikeTasks());
+    @GetMapping("/tasks/likes")
+    public ResponseEntity getAllLikeTasks(@RequestParam(value = "page", defaultValue = "0")
+                                                  Integer page,
+                                          @RequestParam(value = "size", defaultValue = "10")
+                                                  Integer size,
+                                          User user) {
+        Pageable pageable = new PageRequest(page, size);
+        Page<Task> tasks = taskRepository.findByLikeUsers(pageable, user);
+        return ResponseEntity.ok(new PageImpl<>(TaskListResponse.wrap(tasks.getContent())));
     }
 
     /**
@@ -335,7 +343,7 @@ public class TaskController {
      * @return
      */
     @TokenValid
-    @PostMapping("/tasks/likes/")
+    @PostMapping("/tasks/likes")
     public ResponseEntity addLikeTask(@RequestBody LikeTaskRequest request, User user) {
         Task task = taskRepository.findOne(request.getTaskId());
         if (task != null) {
