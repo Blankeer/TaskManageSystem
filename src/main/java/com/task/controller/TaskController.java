@@ -9,23 +9,18 @@ import com.task.bean.request.LikeTaskRequest;
 import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.ContentDetailResponse;
 import com.task.bean.response.FieldDetailResponse;
-import com.task.bean.response.TaskListResponse;
 import com.task.repository.ContentRepository;
 import com.task.repository.FieldRepository;
 import com.task.repository.TaskRepository;
 import com.task.repository.UserRepository;
-import com.task.service.task.TaskService;
-import com.task.utils.DataTableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.datatables.mapping.Column;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.*;
 import java.util.*;
 
 /**
@@ -33,8 +28,6 @@ import java.util.*;
  */
 @RestController
 public class TaskController {
-    @Autowired
-    TaskService taskService;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -46,33 +39,16 @@ public class TaskController {
 
     @TokenValid
     @GetMapping("/tasks")
-    public ResponseEntity getAllTasks(DataTablesInput input, User user) {
-        List<Column> columns = input.getColumns();
-        List<Column> deleteColumns = new ArrayList<>();
-        //需要删除data为空的字段，防止报错
-        for (Column column : columns) {
-            if (column.getData() == null || column.getData().trim().length() == 0) {
-                deleteColumns.add(column);
-            }
-        }
-        columns.removeAll(deleteColumns);
-        DataTablesOutput<Task> tasks_row = taskRepository.findAll(input, new Specification<Task>() {
-            @Override
-            public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                Path<Set<User>> users = root.get("users");
-                return criteriaBuilder.isMember(user, users);
-            }
-        });
-        //把task转成taskResponse
-        List<TaskListResponse> tasks = new ArrayList<>();
-        DataTablesOutput result = DataTableUtils.convert(tasks_row);
-        if (tasks_row.getData() != null) {
-            for (Task task : tasks_row.getData()) {
-                tasks.add(TaskListResponse.wrap(task));
-            }
-        }
-        result.setData(tasks);
-        return ResponseEntity.ok(result);
+    public ResponseEntity getAllTasks(@RequestParam(value = "page", defaultValue = "0")
+                                              Integer page,
+                                      @RequestParam(value = "size", defaultValue = "10")
+                                              Integer size,
+                                      @RequestParam(value = "key", defaultValue = "")
+                                              String key,
+                                      User user) {
+        Pageable pageable = new PageRequest(page, size);
+        Page<Task> tasks = taskRepository.findByUsersAndTitleContaining(pageable, user, key);
+        return ResponseEntity.ok(tasks);
     }
 
     @TokenValid
@@ -89,14 +65,20 @@ public class TaskController {
     @PostMapping("/tasks")
     public ResponseEntity addTask(@RequestBody Task task) {
         // TODO: 17-1-27 验证
-        return ResponseEntity.ok(taskService.addTask(task));
+        return ResponseEntity.ok(taskRepository.save(task));
     }
 
     @AdminValid
     @PostMapping("/tasks/{id}")
     public ResponseEntity updateTask(@PathVariable int id, @RequestBody Task task) {
         // TODO: 17-1-27 验证
-        Task newTask = taskService.updateTask(id, task);
+        Task newTask = null;
+        Task oldTask = taskRepository.findOne(id);
+        if (oldTask != null) {
+            oldTask.setTitle(task.getTitle());
+            oldTask.setDescription(task.getDescription());
+            newTask = taskRepository.save(oldTask);
+        }
         if (newTask != null) {
             return ResponseEntity.ok(newTask);
         }
