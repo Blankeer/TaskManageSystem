@@ -107,7 +107,11 @@ public class TaskController {
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity deleteTask(@PathVariable int id) {
         // TODO: 17-1-27 验证
-        taskService.deleteTask(id);
+        Task task = taskRepository.findOne(id);
+        if (task == null) {
+            return ResponseEntity.notFound().build();
+        }
+        taskRepository.delete(id);
         return ResponseEntity.ok().build();
     }
 
@@ -127,14 +131,13 @@ public class TaskController {
         return ResponseEntity.notFound().build();
     }
 
-    private List<Field> getFiledsByContent(List<ContentItem> contentItems) {
-        List<Field> fields = new ArrayList<>();
-        for (ContentItem item : contentItems) {
-            fields.add(item.getField());
-        }
-        return fields;
-    }
-
+    /**
+     * 获得当前用户 某个 task 提交的内容,可能有多条
+     *
+     * @param id
+     * @param user
+     * @return
+     */
     @TokenValid
     @GetMapping("/tasks/{id}/contents")
     public ResponseEntity getTaskContents(@PathVariable int id, User user) {
@@ -142,21 +145,6 @@ public class TaskController {
         List<ContentDetailResponse> contents = new ArrayList<>();
         if (task != null) {
             List<Content> sets = contentRepository.findByTaskAndUser(task, user);
-//            for (Content content : sets) {
-//                if (content.getItems().size() != task.getFields().size()) {//有些字段没有填写
-//                    List<Field> existFields = getFiledsByContent(content.getItems());
-//                    List<Field> missFields = new ArrayList<>(task.getFields());
-//                    missFields.removeAll(existFields);
-//                    for (Field missField : missFields) {
-//                        ContentItem item = new ContentItem();
-//                        item.setField(missField);
-//                        item.setContent(content);
-//                        item.setValue("");
-//                        item.setVerify(false);
-//                        content.getItems().add(item);
-//                    }
-//                }
-//            }
             for (Content item : sets) {
                 contents.add(ContentDetailResponse.wrap(item));
             }
@@ -179,6 +167,10 @@ public class TaskController {
                                           User user,
                                           @RequestBody ContentRequest request) {
         Task task = taskRepository.findOne(taskId);
+        if (task.getDeadlineTime().compareTo(new Date()) >= 0) {//超过截止时间
+            return ResponseEntity.badRequest()
+                    .body(new BaseMessageResponse("超过截止时间,不能提交"));
+        }
         String failMsg = null;
         HttpStatus status = HttpStatus.CREATED;
         Content content = new Content();
@@ -256,10 +248,13 @@ public class TaskController {
                                              User user,
                                              @RequestBody ContentRequest request) {
         Task task = taskRepository.findOne(taskId);
+        if (task.getDeadlineTime().compareTo(new Date()) >= 0) {//超过截止时间
+            return ResponseEntity.badRequest()
+                    .body(new BaseMessageResponse("超过截止时间,不能提交"));
+        }
         String failMsg = null;
         HttpStatus status = HttpStatus.CREATED;
         Content content = contentRepository.findOne(contentId);
-//        Set<ContentItem> contentItems = new HashSet<>();
         if (task != null && content != null) {
             if (!user.equals(content.getUser())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -289,12 +284,6 @@ public class TaskController {
                             status = HttpStatus.BAD_REQUEST;
                             break;
                         } else {
-//                            ContentItem contentItem = new ContentItem();
-//                            contentItem.setValue(value);
-//                            contentItem.setContent(content);
-//                            contentItem.setField(field);
-//                            contentItem.setVerify(false);//未审核
-//                            contentItems.add(contentItem);
                             for (ContentItem item : content.getItems()) {
                                 if (item.getField().equals(field)) {
                                     item.setValue(value);
@@ -314,10 +303,6 @@ public class TaskController {
             failMsg = "任务或内容不存在";
             status = HttpStatus.NOT_FOUND;
         }
-//        if (failMsg == null && contentItems.size() != task.getFields().size()) {
-//            failMsg = "请提交完整";
-//            status = HttpStatus.BAD_REQUEST;
-//        }
         if (failMsg != null) {
             return ResponseEntity.status(status)
                     .body(new BaseMessageResponse(failMsg));
