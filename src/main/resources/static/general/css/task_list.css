@@ -26,3 +26,7 @@ tr:hover {
     border-style: solid;
     border-width: 1px;
 }
+.task_item{
+    display: inline-block;
+    
+}

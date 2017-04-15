@@ -10,6 +10,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * Created by blanke on 17-1-25.
  */
 public interface TaskRepository extends PagingAndSortingRepository<Task, Integer> {
-    Page<Task> findByUsers(Pageable pageable, User user);
     Page<Task> findByUsersAndTitleContaining(Pageable pageable, User user,String title);
+
 }

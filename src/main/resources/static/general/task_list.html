@@ -5,13 +5,10 @@
 
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="../css/jquery.dataTables.min.css" type="text/css"/>
     <link rel="stylesheet" href="css/task_list.css" type="text/css"/>
 
     <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.spring-friendly.js  "></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="js/task_list.js"></script>
 </head>
 <body>
@@ -25,9 +22,13 @@
         <th>截止时间</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="table_body">
 
     </tbody>
+    <ul class="pager">
+        <li class="disabled"><a href="#" id="previous">上一页</a></li>
+        <li><a href="#" id="next">下一页</a></li>
+    </ul>
 </table>
 </body>
 </html>
