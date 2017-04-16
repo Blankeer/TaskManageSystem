@@ -6,18 +6,16 @@
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/task_detail.css" type="text/css"/>
-    <link rel="stylesheet" href="../css/jquery.dataTables.min.css" type="text/css"/>
 
     <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.spring-friendly.js  "></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.twbsPagination.min.js"></script>
     <script type="text/javascript" src="js/task_detail.js"></script>
 </head>
 <body>
 <button id="back" class="btn btn-primary">返回</button>
 <button id="bu_add_template" style="display: none;" class="btn btn-primary" data-toggle="modal"
-        data-target="#addFromTemplate">从模板添加
+        data-target="#addFromTemplate" data-backdrop="false">从模板添加
 </button>
 <br>
 <div class="attr_div">
@@ -53,11 +51,10 @@
             <div class="modal-body" id="div_template">
                 <table id="table_task_template">
 
-                    <ul class="pager">
-                        <li class="disabled"><a href="#" id="previous">上一页</a></li>
-                        <li><a href="#" id="next">下一页</a></li>
-                    </ul>
+
                 </table>
+
+                <ul id="pagination" class="pagination-sm"></ul>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭

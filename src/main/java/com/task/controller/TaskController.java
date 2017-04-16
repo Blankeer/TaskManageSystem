@@ -156,15 +156,15 @@ public class TaskController {
                                           User user,
                                           @RequestBody ContentRequest request) {
         Task task = taskRepository.findOne(taskId);
-        if (task.getDeadlineTime().compareTo(new Date()) >= 0) {//超过截止时间
-            return ResponseEntity.badRequest()
-                    .body(new BaseMessageResponse("超过截止时间,不能提交"));
-        }
         String failMsg = null;
         HttpStatus status = HttpStatus.CREATED;
         Content content = new Content();
         Set<ContentItem> contentItems = new HashSet<>();
         if (task != null) {
+            if (task.getDeadlineTime().compareTo(new Date()) >= 0) {//超过截止时间
+                return ResponseEntity.badRequest()
+                        .body(new BaseMessageResponse("超过截止时间,不能提交"));
+            }
             content.setTask(task);
             content.setUser(user);
             content.setSubmit(request.isSubmit());
@@ -237,10 +237,6 @@ public class TaskController {
                                              User user,
                                              @RequestBody ContentRequest request) {
         Task task = taskRepository.findOne(taskId);
-        if (task.getDeadlineTime().compareTo(new Date()) >= 0) {//超过截止时间
-            return ResponseEntity.badRequest()
-                    .body(new BaseMessageResponse("超过截止时间,不能提交"));
-        }
         String failMsg = null;
         HttpStatus status = HttpStatus.CREATED;
         Content content = contentRepository.findOne(contentId);
@@ -248,6 +244,10 @@ public class TaskController {
             if (!user.equals(content.getUser())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new BaseMessageResponse("禁止访问"));
+            }
+            if (task.getDeadlineTime().compareTo(new Date()) >= 0) {//超过截止时间
+                return ResponseEntity.badRequest()
+                        .body(new BaseMessageResponse("超过截止时间,不能提交"));
             }
             content.setTask(task);
             content.setUser(user);
