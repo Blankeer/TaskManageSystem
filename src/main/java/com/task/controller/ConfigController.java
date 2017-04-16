@@ -40,6 +40,6 @@ public class ConfigController {
                                        @RequestParam(value = "key", defaultValue = "")
                                                String key) {
         Pageable pageable = new PageRequest(page, size);
-        return ResponseEntity.ok(configRepository.findNameContaining(pageable, key));
+        return ResponseEntity.ok(configRepository.findByNameContaining(pageable, key));
     }
 }

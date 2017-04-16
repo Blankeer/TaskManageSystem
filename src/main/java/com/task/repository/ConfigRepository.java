@@ -9,5 +9,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * Created by blanke on 17-1-25.
  */
 public interface ConfigRepository extends PagingAndSortingRepository<Config, Integer> {
-    Page<Config> findNameContaining(Pageable pageable, String name);
+    Page<Config> findByNameContaining(Pageable pageable, String name);
 }
