@@ -16,7 +16,9 @@
 </head>
 <body>
 <button id="back" class="btn btn-primary">返回</button>
-<button id="bu_add_template" class="btn btn-primary" data-toggle="modal" data-target="#addFromTemplate">从模板添加</button>
+<button id="bu_add_template" style="display: none;" class="btn btn-primary" data-toggle="modal"
+        data-target="#addFromTemplate">从模板添加
+</button>
 <br>
 <div class="attr_div">
     <span class="attr_title">名称</span>
@@ -50,13 +52,11 @@
             </div>
             <div class="modal-body" id="div_template">
                 <table id="table_task_template">
-                    <thead>
-                    <tr>
-                        <th>标题</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
+
+                    <ul class="pager">
+                        <li class="disabled"><a href="#" id="previous">上一页</a></li>
+                        <li><a href="#" id="next">下一页</a></li>
+                    </ul>
                 </table>
             </div>
             <div class="modal-footer">

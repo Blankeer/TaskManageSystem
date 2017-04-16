@@ -6,20 +6,10 @@ $(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
     });
     var task_id = localStorage.getItem('click_task_id');
-    $('#bu_add_template').click(function () {//从模板添加, dialog
-        //初始化分页
-        $('#table_task_template').DataTable({
-            'ajax': '/tasks/likes/',
-            'serverSide': true,
-            "ordering": false,
-            initComplete: function () {
-                $('tr').css('background-color', 'rgba(0,0,0,0)');
-            },
-            // columns: [{
-            //     data: 'title'
-            // }]
-        });
-    });
+    if (task_id == null) {
+        $("#bu_add_template").show();
+    }
+
 
     $('#content_row_template').hide();//hide template
     if (task_id) {

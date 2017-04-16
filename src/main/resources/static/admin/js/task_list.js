@@ -2,7 +2,7 @@ var page = -1;
 var size = 10;
 $(document).ready(function () {
     $('#bu_task_add').click(function () {
-        localStorage.setItem('click_task_id', -1);//-1表示新增
+        localStorage.removeItem('click_task_id');//新增
         $('#menuFrame', parent.document.body).attr('src', 'task_detail.html')
     });
     //配置分页

@@ -15,8 +15,8 @@ import com.task.repository.FieldRepository;
 import com.task.repository.TaskRepository;
 import com.task.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,12 @@ public class TaskController {
                                       User user) {
         Pageable pageable = new PageRequest(page, size);
         Page<Task> tasks = taskRepository.findByUsersAndTitleContaining(pageable, user, key);
-        return ResponseEntity.ok(tasks);
+        return ResponseEntity.ok(tasks.map(new Converter<Task, TaskListResponse>() {
+            @Override
+            public TaskListResponse convert(Task task) {
+                return TaskListResponse.wrap(task);
+            }
+        }));
     }
 
     @TokenValid
@@ -332,7 +337,12 @@ public class TaskController {
                                           User user) {
         Pageable pageable = new PageRequest(page, size);
         Page<Task> tasks = taskRepository.findByLikeUsers(pageable, user);
-        return ResponseEntity.ok(new PageImpl<>(TaskListResponse.wrap(tasks.getContent())));
+        return ResponseEntity.ok(tasks.map(new Converter<Task, TaskListResponse>() {
+            @Override
+            public TaskListResponse convert(Task task) {
+                return TaskListResponse.wrap(task);
+            }
+        }));
     }
 
     /**
