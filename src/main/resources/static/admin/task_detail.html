@@ -8,63 +8,58 @@
     <link rel="stylesheet" href="css/task_detail.css" type="text/css"/>
 
     <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.tools.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.twbsPagination.min.js"></script>
     <script type="text/javascript" src="js/task_detail.js"></script>
 </head>
 <body>
 <button id="back" class="btn btn-primary">返回</button>
-<button id="bu_add_template" style="display: none;" class="btn btn-primary" data-toggle="modal"
-        data-target="#addFromTemplate" data-backdrop="false">从模板添加
-</button>
 <br>
-<div class="attr_div">
-    <span class="attr_title">名称</span>
-    <input id="task_title" class="form-control input_text attr_value">
-</div>
-<div class="attr_div">
-    <span class="attr_title">备注</span>
-    <input id="task_desc" class="form-control input_text attr_value" type="text">
-</div>
-<div class="attr_div">
-    <span class="attr_title">开始时间</span>
-    <input id="task_start_time" class="form-control input_text attr_value" type="datetime">
-</div>
-<div class="attr_div">
-    <span class="attr_title">结束时间</span>
-    <input id="task_end_time" class="form-control input_text attr_value" type="datetime">
-</div>
+<fieldset disabled>
+    <div class="attr_div">
+        <span class="attr_title">名称</span>
+        <input id="task_title" class="form-control input_text attr_value">
+    </div>
+    <div class="attr_div">
+        <span class="attr_title">发布时间</span>
+        <input id="task_start_time" class="form-control input_text attr_value" type="datetime">
+    </div>
+    <div class="attr_div">
+        <span class="attr_title">截止时间</span>
+        <input id="task_end_time" class="form-control input_text attr_value" type="datetime">
+    </div>
+    <div class="attr_div">
+        <span class="attr_title">备注</span>
+        <input id="task_desc" class="form-control input_text attr_value" type="text">
+    </div>
+</fieldset>
+<button id="add_content_row" class="btn btn-success"> 新增</button>
+<div id="field_div">
 
-<!-- 从模板添加 -->
-<div class="modal fade" id="addFromTemplate" tabindex="2" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    从模板添加
-                </h4>
+</div>
+<div id="contents_div">
+
+</div>
+<div id="content_row_template" style="margin: 10px;padding:10px;text-align: center;">
+    已保存:<span class="content_row_save">false</span>
+    已提交:<span class="content_row_submit">false</span>
+    已审核:<span class="content_row_verify">false</span>
+    <div class="div_content">
+        <div style="width: auto;display: inline-block;margin: 5px" class="content_item">
+            <div class="div_content_field" data-toggle="tooltip" style="margin: 5px;">
+                字段名称
             </div>
-            <div class="modal-body" id="div_template">
-                <table id="table_task_template">
-
-
-                </table>
-
-                <ul id="pagination" class="pagination-sm"></ul>
+            <div class="div_content_value" style="margin: 5px;">
+                <input class="form-control input_text attr_value content_value" data-toggle="tooltip" type="text">
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
-                </button>
-                <button type="button" class="btn btn-primary">
-                    确定
-                </button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary content_save">保存</button>
+        <button class="btn btn-primary content_submit">提交</button>
+        <button class="btn btn-primary btn-danger content_delete">删除</button>
+    </div>
+
 </div>
 </body>
 </html>

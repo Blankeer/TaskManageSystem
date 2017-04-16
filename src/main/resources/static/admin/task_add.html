@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>任务详情</title>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/task_detail.css" type="text/css"/>
+
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.twbsPagination.min.js"></script>
+    <script type="text/javascript" src="js/task_add.js"></script>
+</head>
+<body>
+<button id="back" class="btn btn-primary">返回</button>
+<button id="bu_add_template" class="btn btn-primary" data-toggle="modal"
+        data-target="#addFromTemplate" data-backdrop="false">从模板添加
+</button>
+<br>
+<div class="attr_div">
+    <span class="attr_title">名称</span>
+    <input id="task_title" class="form-control input_text attr_value">
+</div>
+<div class="attr_div">
+    <span class="attr_title">备注</span>
+    <input id="task_desc" class="form-control input_text attr_value" type="text">
+</div>
+<div class="attr_div">
+    <span class="attr_title">开始时间</span>
+    <input id="task_start_time" class="form-control input_text attr_value" type="datetime">
+</div>
+<div class="attr_div">
+    <span class="attr_title">结束时间</span>
+    <input id="task_end_time" class="form-control input_text attr_value" type="datetime">
+</div>
+
+<button id="bu_add_field" class="btn btn-primary" data-toggle="modal"
+        data-target="#addFieldDialog" data-backdrop="false">添加字段
+</button>
+<div id="div_field_template" style="display: none;">
+    <span class="field_title"></span>
+    <span class="field_config_name"></span>
+    <button class="btn btn-primary field_delete">删除</button>
+</div>
+<div id="div_fields">
+
+</div>
+<!-- 从模板添加 -->
+<div class="modal fade" id="addFromTemplate" tabindex="2" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    从模板添加
+                </h4>
+            </div>
+            <div class="modal-body">
+                <table id="table_task_template">
+
+
+                </table>
+
+                <ul id="pagination" class="pagination-sm"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary">
+                    确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 添加字段 -->
+<div class="modal fade" id="addFieldDialog" tabindex="2" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    添加字段
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    字段名称:
+                    <input id="dialog_field_name" class="form-control input_text attr_value">
+                </div>
+                <div>
+                    字段描述:
+                    <input id="dialog_field_desc" class="form-control input_text attr_value">
+                </div>
+                <div>
+                    规则配置:
+                    <div class="dropdown">
+                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                            <span id="dialog_config_target_name">选择规则</span>
+                            <span class="caret"></span>
+                        </button>
+                        <li role="presentation" id="dialog_config_item_template" style="display: none;">
+                            <a role="menuitem" tabindex="-1" href="#"></a>
+                        </li>
+                        <ul class="dropdown-menu" role="menu" id="ul_configs" aria-labelledby="dropdownMenu1">
+                        </ul>
+                    </div>
+                </div>
+                <ul id="pagination_config" class="pagination-sm"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="dialog_config_submit">
+                    确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<button id="save" class="btn btn-primary">保存</button>
+</body>
+</html>

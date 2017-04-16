@@ -1,83 +1,25 @@
 /**
  * Created by blanke on 2017/4/4.
  */
-var size = 10;
 $(function () {
     $('#back').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
     });
     var task_id = localStorage.getItem('click_task_id');
-    if (task_id == null) {
-        $("#bu_add_template").show();
-        initPagination();
-    }
-
-    //收藏列表 初始化分页
-    function initPagination() {
-        getTask(0, size, function (data) {
-            $('#pagination').twbsPagination({
-                totalPages: data.totalPages,
-                visiblePages: 5,
-                first: "首页",
-                last: "尾页",
-                prev: "上一页",
-                next: "下一页",
-                hideOnlyOnePage: true,
-                onPageClick: function (event, page) {
-                    getTask(page - 1, size, function (data) {
-                        $('#table_task_template').empty();
-                        for (var i in data.content) {
-                            addTaskRowHtml(data.content[i]);
-                        }
-                    });
-                }
-            });
-            for (var i in data.content) {
-                addTaskRowHtml(data.content[i]);
-            }
-        });
-    }
-
-    //ajax 之后,把 每行的task 数据转换成 html, 添加到页面
-    function addTaskRowHtml(item_data) {
-        $('#table_task_template').append(getTaskRowItem(item_data));
-    }
-
-    //解析 ajax ,返回每行数据
-    function getTaskRowItem(data) {
-        var item_html = $("<div></div>");
-        item_html.text(data.title);
-        item_html.click(function () {
-            task_id = data.id;
-            $('#addFromTemplate').modal('hide');
-            initTaskData();
-        });
-        return item_html;
-    }
-
-    // task list 上一页下一页 ajax,分页
-    function getTask(page, size, callback) {
-        $.get('/tasks/likes?page=' + page + "&size=" + size, callback);
-    }
-
     $('#content_row_template').hide();//hide template
-    initTaskData();
+    if (task_id) {
+        //获得任务详情
+        $.get('/task/' + task_id, function (data) {
+            $('#task_title').val(data.title);
+            $('#task_desc').val(data.description);
+            $('#task_start_time').val(data.publishTime);
+            $('#task_end_time').val(data.deadlineTime);
+            loadContntData();
+        });
 
-    function initTaskData() {
-        if (task_id) {
-            //获得任务详情
-            $.get('/task/' + task_id, function (data) {
-                $('#task_title').val(data.title);
-                $('#task_desc').val(data.description);
-                $('#task_start_time').val(data.publishTime);
-                $('#task_end_time').val(data.deadlineTime);
-                loadContentData();
-            });
-        }
     }
-
     //ajax 获得用户提交的数据, 可能是进入页面调用,也可能是删除或提交内容之后调用
-    function loadContentData() {
+    function loadContntData() {
         //get task fields
         var div_fields = $('#field_div');
         var div_contents = $('#contents_div');

@@ -2,7 +2,7 @@ var size = 10;
 $(document).ready(function () {
     $('#bu_task_add').click(function () {
         localStorage.removeItem('click_task_id');//新增
-        $('#menuFrame', parent.document.body).attr('src', 'task_detail.html')
+        $('#menuFrame', parent.document.body).attr('src', 'task_add.html')
     });
 
     initPagination();
