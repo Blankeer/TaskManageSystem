@@ -1,50 +1,42 @@
-var page = -1;
 var size = 10;
 $(document).ready(function () {
     $('#bu_task_add').click(function () {
-        localStorage.setItem('click_task_id', -1);//-1表示新增
+        localStorage.removeItem('click_task_id');//新增
         $('#menuFrame', parent.document.body).attr('src', 'task_detail.html')
     });
-    //配置分页
-    $("#next").click(function () {
-        if ($(this).hasClass("disabled")) {
-            return;
-        }
-        page++;
-        enablePrevious()
-        getTask(page, size, function (data) {
-            $('#table_body').empty()
-            for (var i in data.content) {
-                $('#table_body').append(getTaskRowItem(data.content[i]));
-                getTaskState(data.content[i].id);
-            }
-            if (data.content.length < size) {
-                disableNext()
-                if (page == 0) {
-                    disablePrevious()
-                }
-            }
-        });
-    });
-    $("#previous").click(function () {
-        if ($(this).hasClass("disabled")) {
-            return;
-        }
-        page--;
-        if (page <= 0) {
-            disablePrevious()
-        }
-        enableNext()
-        getTask(page, size, function (data) {
-            $('#table_body').empty()
-            for (var i in data.content) {
-                $('#table_body').append(getTaskRowItem(data.content[i]));
-                getTaskState(data.content[i].id);
-            }
-        });
-    });
-    $("#next").click()
+
+    initPagination();
 });
+//初始化分页
+function initPagination() {
+    getTask(0, size, function (data) {
+        $('#pagination').twbsPagination({
+            totalPages: data.totalPages,
+            visiblePages: 5,
+            first: "首页",
+            last: "尾页",
+            prev: "上一页",
+            next: "下一页",
+            hideOnlyOnePage: true,
+            onPageClick: function (event, page) {
+                getTask(page - 1, size, function (data) {
+                    $('#table_body').empty();
+                    for (var i in data.content) {
+                        addTaskRowHtml(data.content[i]);
+                    }
+                });
+            }
+        });
+        for (var i in data.content) {
+            addTaskRowHtml(data.content[i]);
+        }
+    });
+}
+//ajax 之后,把 每行的task 数据转换成 html, 添加到页面
+function addTaskRowHtml(item_data) {
+    $('#table_body').append(getTaskRowItem(item_data));
+    getTaskState(item_data.id);
+}
 //ajax,获得任务状态
 function getTaskState(task_id) {
     $.get("/tasks/" + task_id + "/contents", function (data) {
@@ -53,24 +45,6 @@ function getTaskState(task_id) {
         task_row.append(data.submit);
         task_row.append(data.verify);
     });
-}
-function enablePrevious() {
-    $('#previous').removeClass('disabled')
-    $('#previous').parent().removeClass('disabled')
-}
-function disablePrevious() {
-    $('#previous').addClass("disabled")
-    $('#previous').parent().addClass("disabled")
-
-}
-function enableNext() {
-    $('#next').removeClass('disabled')
-    $('#next').parent().removeClass('disabled')
-}
-function disableNext() {
-    $('#next').addClass("disabled")
-    $('#next').parent().addClass("disabled")
-
 }
 //解析 ajax ,返回每行数据
 function getTaskRowItem(data) {
