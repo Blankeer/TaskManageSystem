@@ -5,12 +5,16 @@ import com.task.bean.User;
 import com.task.bean.request.ChangePwdRequest;
 import com.task.bean.request.LoginRequest;
 import com.task.bean.response.BaseMessageResponse;
+import com.task.repository.UserRepository;
 import com.task.service.user.UserService;
+import com.task.utils.Md5Utils;
 import com.task.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Random;
 
 /**
  * Created by blanke on 17-1-25.
@@ -19,30 +23,44 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    UserRepository userRepository;
 
-    @PostMapping("/login/$")
+    public String getToken(User user) {
+        return Md5Utils.md5(new Random().nextInt(1024) + user.getEmail()
+                + System.currentTimeMillis());
+    }
+
+    public void clearToken(User user) {
+        user.setToken("");
+        userRepository.save(user);
+    }
+
+    @PostMapping("/login/")
     public ResponseEntity login(@RequestBody LoginRequest request) {
-        Object obj = userService.login(request.getEmail(), request.getPwd());
-        if (obj != null) {
-            if (obj instanceof User) {
-                return ResponseEntity.ok(obj);
-            } else if (obj instanceof Integer) {
-                int state = (int) obj;
-                ResponseEntity<BaseMessageResponse> res = null;
-                if (state == -1) {
-                    res = new ResponseEntity<>(
-                            new BaseMessageResponse("提交数据不符合规范"), HttpStatus.BAD_REQUEST);
-                } else if (state == -2) {
-                    res = new ResponseEntity<>(
-                            new BaseMessageResponse("密码不正确"), HttpStatus.BAD_REQUEST);
-                } else {
-                    res = new ResponseEntity<>(
-                            new BaseMessageResponse("用户不存在"), HttpStatus.NOT_FOUND);
-                }
-                return res;
-            }
+//        Object obj = userService.login(request.getEmail(), request.getPwd());
+        if (TextUtils.isEmpty(request.getEmail())
+                || TextUtils.isEmpty(request.getPwd())) {
+            return new ResponseEntity<>(
+                    new BaseMessageResponse("用户名或密码不能为空"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        String account = request.getEmail().trim();
+        String pwd = request.getPwd().trim();
+        User user = userRepository.findByEmail(account);
+        if (user != null) {
+            if (user.getPwd().equals(pwd)) {
+                user.setToken(getToken(user));
+                userRepository.save(user);
+                user.setPwd("");
+                return ResponseEntity.ok(user);
+            } else {
+                return new ResponseEntity<>(
+                        new BaseMessageResponse("密码不正确"), HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>(
+                    new BaseMessageResponse("用户不存在"), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/register")
