@@ -2,6 +2,7 @@
  * Created by blanke on 2017/4/4.
  */
 var size = 10;
+var select_users = new Set();//选择的用户,保存的 id
 $(function () {
     $('#back').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
@@ -145,6 +146,67 @@ $(function () {
         }
     });
 
+    //点击添加用户
+    $('#addUserDialog').on('show.bs.modal', function () {
+        $('#div_users').empty();
+        getUsers(0, size, function (data) {
+            $('#pagination_users').twbsPagination({
+                totalPages: data.totalPages,
+                visiblePages: 5,
+                first: "首页",
+                last: "尾页",
+                prev: "上一页",
+                next: "下一页",
+                hideOnlyOnePage: true,
+                onPageClick: function (event, page) {
+                    getUsers(page - 1, size, function (data) {
+                        $('#div_users').empty();
+                        for (var i in data.content) {
+                            addUserRowHtml(data.content[i]);
+                        }
+                    });
+                }
+            });
+            for (var i in data.content) {
+                addUserRowHtml(data.content[i]);
+            }
+        });
+        // 选择用户,点击确定
+        $('#dialog_submit_submit').click(function () {
+            $('#addUserDialog').modal('hide');
+            $('#span_user_count').text(select_users.size);
+        });
+    });
+    //ajax 获得用户列表
+    function getUsers(page, size, callback) {
+        $.get('/users?page=' + page + "&size=" + size, callback);
+    }
+
+    //根据 user item 内容 返回 Html
+    function addUserRowHtml(user_item_data) {
+        var item_html = $('#dialog_user_item_template').clone();
+        item_html.attr('id', 'user_' + user_item_data.id);
+        var user_checkbox = item_html.find('.user_checkbox');
+        if (select_users.has(user_item_data.id)) {
+            user_checkbox.attr("checked", 'true');
+        } else {
+            user_checkbox.removeAttr("checked");
+        }
+        var span_user = item_html.find('.user_name');
+        span_user.text(user_item_data.nickName);
+        span_user.attr('title', user_item_data.email);
+        user_checkbox.change(function () {
+            if (this.checked) {
+                select_users.add(user_item_data.id);
+            } else {
+                select_users.delete(user_item_data.id);
+            }
+        });
+        item_html.show();
+        $('#div_users').append(item_html);
+    }
+
+
     //保存
     $('#save').click(function () {
         var task_title = $('#task_title').val();
@@ -156,21 +218,24 @@ $(function () {
             'title': task_title,
             'description': task_desc,
             'publishTime': task_start_time,
-            'deadlineTime': task_end_time
+            'deadlineTime': task_end_time,
+            'users': Array.from(select_users),
         };
         var field_json = [];
         for (var i in fields) {
             var item_data = $(fields[i]).attr('data');
-            var item_json = eval('('+item_data+')');
-            console.log(item_json);
-            field_json.push({
-                'name': item_json.name,
-                'description': item_json.description,
-                'config_id': item_json.config.id
-            });
+            if (item_data) {
+                var item_json = eval('(' + item_data + ')');
+                // console.log(item_json);
+                field_json.push({
+                    'name': item_json.name,
+                    'description': item_json.description,
+                    'config_id': item_json.config.id
+                });
+            }
         }
         data_json['configs'] = field_json;
         console.log(JSON.stringify(data_json));
 
-    })
+    });
 });
