@@ -1,15 +1,21 @@
 package com.task.controller;
 
+import com.task.annotation.AdminValid;
 import com.task.annotation.TokenValid;
 import com.task.bean.User;
 import com.task.bean.request.ChangePwdRequest;
 import com.task.bean.request.LoginRequest;
 import com.task.bean.response.BaseMessageResponse;
+import com.task.bean.response.UserListResponse;
 import com.task.repository.UserRepository;
 import com.task.service.user.UserService;
 import com.task.utils.Md5Utils;
 import com.task.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -108,5 +114,21 @@ public class UserController {
         }
         userService.setNiceName(user, nickname);
         return ResponseEntity.ok().build();
+    }
+
+    @AdminValid
+    @GetMapping("/users")
+    public ResponseEntity getUserList(@RequestParam(value = "page", defaultValue = "0")
+                                              Integer page,
+                                      @RequestParam(value = "size", defaultValue = "10")
+                                              Integer size) {
+        Pageable pageable = new PageRequest(page, size);
+        Page<User> users = userRepository.findAll(pageable);
+        return ResponseEntity.ok(users.map(new Converter<User, UserListResponse>() {
+            @Override
+            public UserListResponse convert(User user) {
+                return UserListResponse.wrap(user);
+            }
+        }));
     }
 }
