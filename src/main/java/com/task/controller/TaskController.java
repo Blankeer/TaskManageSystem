@@ -3,17 +3,13 @@ package com.task.controller;
 import com.task.annotation.AdminValid;
 import com.task.annotation.TokenValid;
 import com.task.bean.*;
-import com.task.bean.request.ContentItemRequest;
-import com.task.bean.request.ContentRequest;
-import com.task.bean.request.LikeTaskRequest;
+import com.task.bean.request.*;
 import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.ContentDetailResponse;
 import com.task.bean.response.FieldDetailResponse;
 import com.task.bean.response.TaskListResponse;
-import com.task.repository.ContentRepository;
-import com.task.repository.FieldRepository;
-import com.task.repository.TaskRepository;
-import com.task.repository.UserRepository;
+import com.task.repository.*;
+import com.task.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
@@ -38,6 +34,8 @@ public class TaskController {
     ContentRepository contentRepository;
     @Autowired
     FieldRepository fieldRepository;
+    @Autowired
+    ConfigRepository configRepository;
 
     @TokenValid
     @GetMapping("/tasks")
@@ -49,7 +47,12 @@ public class TaskController {
                                               String key,
                                       User user) {
         Pageable pageable = new PageRequest(page, size);
-        Page<Task> tasks = taskRepository.findByUsersAndTitleContaining(pageable, user, key);
+        Page<Task> tasks = null;
+        if (user.isAdmin()) {//管理员显示所有
+            tasks = taskRepository.findByTitleContaining(pageable, key);
+        } else {
+            tasks = taskRepository.findByUsersAndTitleContaining(pageable, user, key);
+        }
         return ResponseEntity.ok(tasks.map(new Converter<Task, TaskListResponse>() {
             @Override
             public TaskListResponse convert(Task task) {
@@ -70,9 +73,64 @@ public class TaskController {
 
     @AdminValid
     @PostMapping("/tasks")
-    public ResponseEntity addTask(@RequestBody Task task) {
-        // TODO: 17-1-27 验证
-        return ResponseEntity.ok(taskRepository.save(task));
+    public ResponseEntity addTask(@RequestBody AddTaskRequest taskRequest) {
+        String title = taskRequest.getTitle();
+        String desc = taskRequest.getDescription();
+        Date deadlineTime = taskRequest.getDeadlineTime();
+        Set<User> users = new HashSet<>();
+        List<Field> fields = new ArrayList<>();
+        String failMsg = null;
+        if (TextUtils.isEmpty(title)) {
+            failMsg = "任务标题不能为空";
+        } else if (deadlineTime == null) {
+            failMsg = "任务截止日期不能为空";
+        } else if (deadlineTime.compareTo(new Date()) <= 0) {
+            failMsg = "任务截止日期必须在今天之后";
+        }
+        if (failMsg != null) {
+            return ResponseEntity.badRequest()
+                    .body(new BaseMessageResponse(failMsg));
+        }
+        //解析 user
+        if (taskRequest.getUsers() != null) {
+            for (int uid : taskRequest.getUsers()) {
+                User user = userRepository.findOne(uid);
+                if (user == null) {
+                    return new ResponseEntity(
+                            new BaseMessageResponse("用户不存在"), HttpStatus.NOT_FOUND);
+                }
+                users.add(user);
+            }
+        }
+        //解析 config
+        if (taskRequest.getFields() != null) {
+            for (AddFieldRequest fieldRequest : taskRequest.getFields()) {
+                if (fieldRequest.getConfig_id() > 0) {
+                    Config config = configRepository.findOne(fieldRequest.getConfig_id());
+                    if (config == null) {
+                        return new ResponseEntity(
+                                new BaseMessageResponse("规则不存在"), HttpStatus.NOT_FOUND);
+                    }
+                    Field field = new Field();
+                    field.setDescription(fieldRequest.getDescription());
+                    field.setConfig(config);
+                    field.setName(fieldRequest.getName());
+                    fields.add(field);
+                }
+            }
+        }
+        Task task = new Task();
+        task.setTitle(title);
+        task.setDescription(desc);
+        task.setPublishTime(new Date());
+        task.setDeadlineTime(deadlineTime);
+        task.setUsers(users);
+        taskRepository.save(task);
+        for (Field field : fields) {
+            field.setTask(task);
+            fieldRepository.save(field);
+        }
+        return ResponseEntity.ok().build();
     }
 
     @AdminValid
