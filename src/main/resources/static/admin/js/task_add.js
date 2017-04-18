@@ -219,23 +219,24 @@ $(function () {
             'description': task_desc,
             'publishTime': task_start_time,
             'deadlineTime': task_end_time,
-            'users': Array.from(select_users),
+            'users': Array.from(select_users)
         };
         var field_json = [];
-        for (var i in fields) {
-            var item_data = $(fields[i]).attr('data');
-            if (item_data) {
-                var item_json = eval('(' + item_data + ')');
-                // console.log(item_json);
-                field_json.push({
-                    'name': item_json.name,
-                    'description': item_json.description,
-                    'config_id': item_json.config.id
-                });
-            }
-        }
-        data_json['configs'] = field_json;
+        fields.each(function () {
+            var item_data = $(this).attr('data');
+            var item_json = eval('(' + item_data + ')');
+            // console.log(item_json);
+            field_json.push({
+                'name': item_json.name,
+                'description': item_json.description,
+                'config_id': item_json.config.id
+            });
+        });
+        data_json['fields'] = field_json;
         console.log(JSON.stringify(data_json));
-
+        $.post('/tasks', data_json, function (data) {
+            alert('添加成功');
+            $('#back').click();
+        })
     });
 });
