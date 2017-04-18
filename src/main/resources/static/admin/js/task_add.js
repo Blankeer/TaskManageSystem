@@ -3,6 +3,8 @@
  */
 var size = 10;
 var select_users = new Set();//选择的用户,保存的 id
+var click_field_data = null;//点击字段的数据
+var click_field_id = null;//点击字段的 item 的 id
 $(function () {
     $('#back').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
@@ -83,6 +85,7 @@ $(function () {
         }
     }
 
+    var field_row_index = 0;
     //添加字段 div
     function addFieldRowItem(data) {
         var template = $('#div_field_template');
@@ -91,20 +94,37 @@ $(function () {
         item_html.find('.field_config_name').text(data.config.name);
         item_html.find('.field_config_name').attr("title", data.config.description);
         item_html.attr('data', JSON.stringify(data));
-        item_html.find('button').click(function () {
+        item_html.attr('id', 'field_' + field_row_index);
+        item_html.find('.field_delete').click(function () {
             $(this).parent().remove();
+        });
+        item_html.find('.field_update').click(function () {
+            click_field_data = data;//保存
+            click_field_id = $(this).parent().attr('id');
+            $('#addFieldDialog').modal('show');
         });
         item_html.show();
         $('#div_fields').append(item_html);
+        field_row_index = field_row_index + 1;
     }
 
     //点击添加字段
     $('#addFieldDialog').on('show.bs.modal', function () {
-        $('#dialog_field_name').val('');
-        $('#dialog_field_desc').val('');
-        $('#dialog_config_target_name').text('选择规则');
-        $('#dialog_config_target_name').removeAttr('config_id');
-        $('#dialog_config_target_name').removeAttr('title');
+        if (click_field_data == null) {
+            $('#dialog_field_name').val('');
+            $('#dialog_field_desc').val('');
+            $('#dialog_field_title').text('添加字段');
+            $('#dialog_config_target_name').text('选择规则');
+            $('#dialog_config_target_name').removeAttr('config_id');
+            $('#dialog_config_target_name').removeAttr('title');
+        } else {
+            $('#dialog_field_name').val(click_field_data.name);
+            $('#dialog_field_desc').val(click_field_data.description);
+            $('#dialog_field_title').text('修改字段');
+            $('#dialog_config_target_name').text(click_field_data.config.name);
+            $('#dialog_config_target_name').attr('config_id', click_field_data.config.id);
+            $('#dialog_config_target_name').attr('title', click_field_data.config.description);
+        }
         $.get('/configs', function (data) {
             $('#ul_configs').empty();
             for (var i in data.content) {
@@ -127,22 +147,40 @@ $(function () {
             }
         });
     });
+    $('#addFieldDialog').on('hide.bs.modal', function () {
+        console.log('dialog  hide...')
+        click_field_data = null;//clear
+        click_field_id = null;
+    });
+
     //添加字段 dialog 点击确定
     $('#dialog_config_submit').click(function () {
         var config_id = $('#dialog_config_target_name').attr('config_id');
         if (config_id > 0) {
-            $('#addFieldDialog').modal('hide');
             var field_name = $('#dialog_field_name').val();
             var field_desc = $('#dialog_field_desc').val();
             var config_name = $('#dialog_config_target_name').attr('config_name');
-            addFieldRowItem({
+            var data = {
                 'name': field_name,
                 'description': field_desc,
                 'config': {
                     'name': config_name,
                     'id': config_id
                 }
-            })
+            };
+            if (click_field_data == null) {
+                addFieldRowItem(data);
+            } else {
+                var field_row = $('#' + click_field_id);
+                click_field_data['name'] = field_name;
+                click_field_data['description'] = field_desc;
+                click_field_data['config']['name'] = config_name;
+                click_field_data['config']['id'] = config_id;
+                field_row.attr('data', JSON.stringify(click_field_data));
+                field_row.find('.field_title').text(field_name);
+                field_row.find('.field_config_name').text(config_name);
+            }
+            $('#addFieldDialog').modal('hide');
         }
     });
 
