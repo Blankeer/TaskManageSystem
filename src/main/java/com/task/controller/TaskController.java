@@ -4,10 +4,7 @@ import com.task.annotation.AdminValid;
 import com.task.annotation.TokenValid;
 import com.task.bean.*;
 import com.task.bean.request.*;
-import com.task.bean.response.BaseMessageResponse;
-import com.task.bean.response.ContentDetailResponse;
-import com.task.bean.response.FieldDetailResponse;
-import com.task.bean.response.TaskListResponse;
+import com.task.bean.response.*;
 import com.task.repository.*;
 import com.task.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +66,16 @@ public class TaskController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(task);
+    }
+
+    @AdminValid
+    @GetMapping("/task/{task_id}/users")
+    public ResponseEntity getTaskUsers(@PathVariable(value = "task_id") int taskId) {
+        Task task = taskRepository.findOne(taskId);
+        if (task == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(UserListResponse.wrap(task.getUsers()));
     }
 
     @AdminValid
