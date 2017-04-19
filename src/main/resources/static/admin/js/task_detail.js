@@ -6,6 +6,9 @@ $(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
     });
     var task_id = localStorage.getItem('click_task_id');
+    $('#update').click(function () {
+        $('#menuFrame', parent.document.body).attr('src', 'task_add.html')
+    });
     $('#content_row_template').hide();//hide template
     if (task_id) {
         //获得任务详情

@@ -9,6 +9,22 @@ $(function () {
     $('#back').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
     });
+    var task_id = localStorage.getItem('click_task_id');
+    if (task_id) {//修改任务
+        $('#bu_add_template').hide();//隐藏从模板添加按钮
+        $('#back').click(function () {
+            $('#menuFrame', parent.document.body).attr('src', 'task_detail.html')
+        });
+        //获得任务详情
+        initTaskData();
+        //获得任务用户信息
+        $.get('/task/' + task_id + '/users', function (data) {
+            for (var i in data) {
+                select_users.add(data[i].id);
+            }
+            $('#span_user_count').text(select_users.size);
+        });
+    }
     //点击从模板添加
     $('#addFromTemplate').on('show.bs.modal', function () {
         initPagination();
