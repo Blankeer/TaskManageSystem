@@ -8,9 +8,18 @@ import java.util.Date;
 public class AddTaskRequest {
     private String title;
     private String description;
+    private Date publishTime;
     private Date deadlineTime;
     private int[] users;
     private AddFieldRequest[] fields;
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
 
     public AddFieldRequest[] getFields() {
         return fields;

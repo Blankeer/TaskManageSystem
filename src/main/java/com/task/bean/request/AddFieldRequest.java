@@ -4,9 +4,18 @@ package com.task.bean.request;
  * Created by blanke on 2017/4/17.
  */
 public class AddFieldRequest {
+    private int id;
     private String name;
     private String description;
     private int config_id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

@@ -5,6 +5,7 @@ var size = 10;
 var select_users = new Set();//选择的用户,保存的 id
 var click_field_data = null;//点击字段的数据
 var click_field_id = null;//点击字段的 item 的 id
+var template_task_id = null;//选择模板任务的 id
 $(function () {
     $('#back').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
@@ -66,7 +67,7 @@ $(function () {
         var item_html = $("<div></div>");
         item_html.text(data.title);
         item_html.click(function () {
-            task_id = data.id;
+            template_task_id = data.id;
             $('#addFromTemplate').modal('hide');
             initTaskData();
         });
@@ -81,18 +82,22 @@ $(function () {
     $('#content_row_template').hide();//hide template
     //获取添加的 task 模板数据
     function initTaskData() {
-        if (task_id) {
+        var tid = template_task_id;
+        if (tid == null) {
+            tid = task_id;
+        }
+        if (tid) {
             //获得任务详情
-            $.get('/task/' + task_id, function (data) {
+            $.get('/task/' + tid, function (data) {
                 $('#task_title').val(data.title);
                 $('#task_desc').val(data.description);
                 $('#task_start_time').val(data.publishTime);
                 $('#task_end_time').val(data.deadlineTime);
                 //获得任务所有的字段
-                $.get('/tasks/' + task_id + '/fields', function (data) {
-                    if (data.length > 0) {
-                        $('#div_fields').empty();
-                    }
+                $.get('/tasks/' + tid + '/fields', function (data) {
+                    // if (data.length > 0) {
+                    //     $('#div_fields').empty();
+                    // }
                     for (var i in data) {
                         addFieldRowItem(data[i]);
                     }
@@ -164,7 +169,6 @@ $(function () {
         });
     });
     $('#addFieldDialog').on('hide.bs.modal', function () {
-        console.log('dialog  hide...')
         click_field_data = null;//clear
         click_field_id = null;
     });
@@ -177,6 +181,7 @@ $(function () {
             var field_desc = $('#dialog_field_desc').val();
             var config_name = $('#dialog_config_target_name').attr('config_name');
             var data = {
+                'id': 0,
                 'name': field_name,
                 'description': field_desc,
                 'config': {
@@ -281,16 +286,24 @@ $(function () {
             var item_json = eval('(' + item_data + ')');
             // console.log(item_json);
             field_json.push({
+                'id': item_json.id,
                 'name': item_json.name,
                 'description': item_json.description,
                 'config_id': item_json.config.id
             });
         });
         data_json['fields'] = field_json;
-        console.log(JSON.stringify(data_json));
-        $.post('/tasks', data_json, function (data) {
-            alert('添加成功');
-            $('#back').click();
-        })
+        // console.log(JSON.stringify(data_json));
+        if (task_id == null) {
+            $.post('/tasks', data_json, function (data) {
+                alert('添加成功');
+                $('#back').click();
+            });
+        } else {
+            $.put('/tasks/' + task_id, data_json, function (data) {
+                alert('添加成功');
+                $('#back').click();
+            });
+        }
     });
 });

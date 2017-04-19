@@ -84,6 +84,7 @@ public class TaskController {
         String title = taskRequest.getTitle();
         String desc = taskRequest.getDescription();
         Date deadlineTime = taskRequest.getDeadlineTime();
+        Date publishTime = taskRequest.getPublishTime();
         Set<User> users = new HashSet<>();
         List<Field> fields = new ArrayList<>();
         String failMsg = null;
@@ -91,8 +92,14 @@ public class TaskController {
             failMsg = "任务标题不能为空";
         } else if (deadlineTime == null) {
             failMsg = "任务截止日期不能为空";
-        } else if (deadlineTime.compareTo(new Date()) <= 0) {
+        } else if (deadlineTime.compareTo(new Date()) < 0) {
             failMsg = "任务截止日期必须在今天之后";
+        } else if (publishTime == null) {
+            failMsg = "任务发布时间不能为空";
+        } else if (publishTime.compareTo(new Date()) < 0) {
+            failMsg = "任务发布时间必须在今天之后";
+        } else if (deadlineTime.compareTo(publishTime) < 0) {
+            failMsg = "截止时间必须大于发布时间";
         }
         if (failMsg != null) {
             return ResponseEntity.badRequest()
@@ -129,7 +136,7 @@ public class TaskController {
         Task task = new Task();
         task.setTitle(title);
         task.setDescription(desc);
-        task.setPublishTime(new Date());
+        task.setPublishTime(publishTime);
         task.setDeadlineTime(deadlineTime);
         task.setUsers(users);
         taskRepository.save(task);
@@ -141,20 +148,88 @@ public class TaskController {
     }
 
     @AdminValid
-    @PostMapping("/tasks/{id}")
-    public ResponseEntity updateTask(@PathVariable int id, @RequestBody Task task) {
-        // TODO: 17-1-27 验证
-        Task newTask = null;
-        Task oldTask = taskRepository.findOne(id);
-        if (oldTask != null) {
-            oldTask.setTitle(task.getTitle());
-            oldTask.setDescription(task.getDescription());
-            newTask = taskRepository.save(oldTask);
+    @PutMapping("/tasks/{id}")
+    public ResponseEntity updateTask(@PathVariable int id,
+                                     @RequestBody AddTaskRequest taskRequest) {
+        Task task = taskRepository.findOne(id);
+        String title = taskRequest.getTitle();
+        String desc = taskRequest.getDescription();
+        Date deadlineTime = taskRequest.getDeadlineTime();
+        Date publishTime = taskRequest.getPublishTime();
+        Set<User> users = new HashSet<>();
+        List<Field> fields = new ArrayList<>();
+        String failMsg = null;
+        if (TextUtils.isEmpty(title)) {
+            failMsg = "任务标题不能为空";
+        } else if (deadlineTime == null) {
+            failMsg = "任务截止日期不能为空";
+        } else if (deadlineTime.compareTo(new Date()) < 0) {
+            failMsg = "任务截止日期必须在今天之后";
+        } else if (publishTime == null) {
+            failMsg = "任务发布时间不能为空";
+        } else if (publishTime.compareTo(new Date()) < 0) {
+            failMsg = "任务发布时间必须在今天之后";
+        } else if (deadlineTime.compareTo(publishTime) < 0) {
+            failMsg = "截止时间必须大于发布时间";
         }
-        if (newTask != null) {
-            return ResponseEntity.ok(newTask);
+        if (failMsg != null) {
+            return ResponseEntity.badRequest()
+                    .body(new BaseMessageResponse(failMsg));
         }
-        return ResponseEntity.notFound().build();
+        //解析 user
+        if (taskRequest.getUsers() != null) {
+            for (int uid : taskRequest.getUsers()) {
+                User user = userRepository.findOne(uid);
+                if (user == null) {
+                    return new ResponseEntity(
+                            new BaseMessageResponse("用户不存在"), HttpStatus.NOT_FOUND);
+                }
+                users.add(user);
+            }
+        }
+        //解析 config
+        if (taskRequest.getFields() != null) {
+            for (AddFieldRequest fieldRequest : taskRequest.getFields()) {
+                int fieldId = fieldRequest.getId();
+                Config config = configRepository.findOne(fieldRequest.getConfig_id());
+                if (config == null) {
+                    return new ResponseEntity(
+                            new BaseMessageResponse("规则不存在"), HttpStatus.NOT_FOUND);
+                }
+                if (fieldId > 0) {//修改
+                    Field field = fieldRepository.findOne(fieldId);
+                    if (field != null && field.getTask().equals(task)) {
+                        field.setDescription(fieldRequest.getDescription());
+                        field.setConfig(config);
+                        field.setName(fieldRequest.getName());
+                        fields.add(field);
+                    }
+                } else {
+                    if (fieldRequest.getConfig_id() > 0) {
+                        Field field = new Field();
+                        field.setDescription(fieldRequest.getDescription());
+                        field.setConfig(config);
+                        field.setName(fieldRequest.getName());
+                        fields.add(field);
+                    }
+                }
+            }
+        }
+        task.setTitle(title);
+        task.setDescription(desc);
+        task.setPublishTime(publishTime);
+        task.setDeadlineTime(deadlineTime);
+        task.setUsers(users);
+        taskRepository.save(task);
+        task.getFields().removeAll(fields);
+        //删掉 该删掉的
+        fieldRepository.deleteInBatch(task.getFields());
+
+        for (Field field : fields) {
+            field.setTask(task);
+            fieldRepository.save(field);
+        }
+        return ResponseEntity.ok().build();
     }
 
     @AdminValid
