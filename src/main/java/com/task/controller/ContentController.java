@@ -1,25 +1,72 @@
 package com.task.controller;
 
 import com.task.annotation.TokenValid;
+import com.task.bean.Content;
+import com.task.bean.Task;
 import com.task.bean.User;
+import com.task.bean.response.ContentDetailResponse;
+import com.task.repository.ContentRepository;
+import com.task.repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by blanke on 2017/3/19.
  */
 @RestController
 public class ContentController {
+    @Autowired
+    TaskRepository taskRepository;
+    @Autowired
+    ContentRepository contentRepository;
 
+    /**
+     * 获得当前用户 某个 task 提交的内容,可能有多条
+     * 普通用户调用返回自己的,管理员返回所有人的
+     *
+     * @param id
+     * @param user
+     * @return
+     */
     @TokenValid
-    @GetMapping("/content")
-    public ResponseEntity getAllTasks(@RequestParam("task_id") int taskId, User user) {
-//        Content content = mContentService.getContent(taskId, user);
-//        if (content == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-        return ResponseEntity.ok("");
+    @GetMapping("/tasks/{id}/contents")
+    public ResponseEntity getTaskContents(@PathVariable int id,
+                                          @RequestParam(value = "page", defaultValue = "0")
+                                                  Integer page,
+                                          @RequestParam(value = "size", defaultValue = "10")
+                                                  Integer size,
+                                          User user) {
+        Task task = taskRepository.findOne(id);
+        if (task != null) {
+            if (!user.isAdmin()) {
+                List<ContentDetailResponse> contents = new ArrayList<>();
+                List<Content> sets = contentRepository.findByTaskAndUser(task, user);
+                for (Content item : sets) {
+                    contents.add(ContentDetailResponse.wrap(item));
+                }
+                return ResponseEntity.ok(contents);
+            } else {//管理员显示所有人提交的内容
+                Pageable pageable = new PageRequest(page, size);
+                Page<Content> contents = contentRepository.findByTask(pageable, task);
+                return ResponseEntity.ok(contents.map(new Converter<Content, ContentDetailResponse>() {
+                    @Override
+                    public ContentDetailResponse convert(Content content) {
+                        return ContentDetailResponse.wrap(content);
+                    }
+                }));
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 }

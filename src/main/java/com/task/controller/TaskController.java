@@ -260,27 +260,7 @@ public class TaskController {
         return ResponseEntity.notFound().build();
     }
 
-    /**
-     * 获得当前用户 某个 task 提交的内容,可能有多条
-     *
-     * @param id
-     * @param user
-     * @return
-     */
-    @TokenValid
-    @GetMapping("/tasks/{id}/contents")
-    public ResponseEntity getTaskContents(@PathVariable int id, User user) {
-        Task task = taskRepository.findOne(id);
-        List<ContentDetailResponse> contents = new ArrayList<>();
-        if (task != null) {
-            List<Content> sets = contentRepository.findByTaskAndUser(task, user);
-            for (Content item : sets) {
-                contents.add(ContentDetailResponse.wrap(item));
-            }
-            return ResponseEntity.ok(contents);
-        }
-        return ResponseEntity.notFound().build();
-    }
+
 
     /**
      * 提交 task 的内容
