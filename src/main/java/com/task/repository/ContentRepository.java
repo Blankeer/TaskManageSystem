@@ -15,5 +15,7 @@ import java.util.List;
 public interface ContentRepository extends PagingAndSortingRepository<Content, Integer> {
     List<Content> findByTaskAndUser(Task task, User user);
 
-    Page<Content> findByTask(Pageable pageable, Task task);
+    Page<Content> findByTaskAndIsSubmit(Pageable pageable, Task task, boolean isSubmit);
+
+    List<Content> findByTask(Task task);
 }

@@ -1,9 +1,11 @@
 package com.task.controller;
 
+import com.task.annotation.AdminValid;
 import com.task.annotation.TokenValid;
 import com.task.bean.Content;
 import com.task.bean.Task;
 import com.task.bean.User;
+import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.ContentDetailResponse;
 import com.task.repository.ContentRepository;
 import com.task.repository.TaskRepository;
@@ -58,7 +60,7 @@ public class ContentController {
                 return ResponseEntity.ok(contents);
             } else {//管理员显示所有人提交的内容
                 Pageable pageable = new PageRequest(page, size);
-                Page<Content> contents = contentRepository.findByTask(pageable, task);
+                Page<Content> contents = contentRepository.findByTaskAndIsSubmit(pageable, task, true);
                 return ResponseEntity.ok(contents.map(new Converter<Content, ContentDetailResponse>() {
                     @Override
                     public ContentDetailResponse convert(Content content) {
@@ -68,5 +70,28 @@ public class ContentController {
             }
         }
         return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * 管理员审核内容
+     * @param cid
+     * @param pass
+     * @return
+     */
+    @AdminValid
+    @GetMapping("/contents/{cid}")
+    public ResponseEntity verifyContent(@PathVariable int cid,
+                                        @RequestParam boolean pass) {
+        Content content = contentRepository.findOne(cid);
+        if (content == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (content.getState() != 0) {//不能重复操作审核
+            return ResponseEntity.badRequest()
+                    .body(new BaseMessageResponse("已经审核过"));
+        }
+        content.setState(pass ? 1 : -1);
+        contentRepository.save(content);
+        return ResponseEntity.ok().build();
     }
 }

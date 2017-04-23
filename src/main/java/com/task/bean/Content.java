@@ -22,7 +22,7 @@ public class Content {
     @ManyToOne
     private User user;
     private boolean isSubmit;
-    private boolean isVerify;
+    private int state;
     private Date updatedAt;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
@@ -68,12 +68,12 @@ public class Content {
         isSubmit = submit;
     }
 
-    public boolean isVerify() {
-        return isVerify;
+    public int getState() {
+        return state;
     }
 
-    public void setVerify(boolean verify) {
-        isVerify = verify;
+    public void setState(int state) {
+        this.state = state;
     }
 
     public void setId(int id) {

@@ -34,31 +34,34 @@
         <input id="task_desc" class="form-control input_text attr_value" type="text">
     </div>
 </fieldset>
-<button id="add_content_row" class="btn btn-success"> 新增</button>
-<div id="field_div">
+<div>
+    任务总人数:<span id="user_count"></span>
+    提交内容数:<span id="content_count"></span>
+    未审核数:<span id="wait_content_count"></span>
+    已通过数:<span id="pass_content_count"></span>
 
 </div>
+<button id="export_data" class="btn btn-primary">导出数据</button>
+
 <div id="contents_div">
 
 </div>
-<div id="content_row_template" style="margin: 10px;padding:10px;text-align: center;">
-    已保存:<span class="content_row_save">false</span>
-    已提交:<span class="content_row_submit">false</span>
-    已审核:<span class="content_row_verify">false</span>
-    <div class="div_content">
+
+<div id="content_row_template" style="display:none;margin: 10px;padding:10px;text-align: center;">
+    提交人:<span class="div_user"></span>  提交时间:<span class="div_time"></span><br/>
+    <div class="div_content" style="display: inline-block;">
         <div style="width: auto;display: inline-block;margin: 5px" class="content_item">
             <div class="div_content_field" data-toggle="tooltip" style="margin: 5px;">
                 字段名称
             </div>
             <div class="div_content_value" style="margin: 5px;">
-                <input class="form-control input_text attr_value content_value" data-toggle="tooltip" type="text">
+                <span class="content_value"></span>
             </div>
         </div>
     </div>
-    <div>
-        <button class="btn btn-primary content_save">保存</button>
-        <button class="btn btn-primary content_submit">提交</button>
-        <button class="btn btn-primary btn-danger content_delete">删除</button>
+    <div style="display: inline-block;" id="verify_bus">
+        <button class="btn btn-primary content_pass">通过</button>
+        <button class="btn btn-primary content_dismiss">驳回</button>
     </div>
 
 </div>

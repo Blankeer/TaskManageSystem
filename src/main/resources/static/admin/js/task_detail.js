@@ -9,7 +9,6 @@ $(function () {
     $('#update').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_add.html')
     });
-    $('#content_row_template').hide();//hide template
     if (task_id) {
         //获得任务详情
         $.get('/task/' + task_id, function (data) {
@@ -17,6 +16,10 @@ $(function () {
             $('#task_desc').val(data.description);
             $('#task_start_time').val(data.publishTime);
             $('#task_end_time').val(data.deadlineTime);
+            $('#user_count').text(data.userCount);
+            $('#content_count').text(data.contentCount);
+            $('#wait_content_count').text(data.waitContentCount);
+            $('#pass_content_count').text(data.passContentCount);
             loadContntData();
         });
 
@@ -24,7 +27,7 @@ $(function () {
     //ajax 获得用户提交的数据, 可能是进入页面调用,也可能是删除或提交内容之后调用
     function loadContntData() {
         //get task fields
-        var div_fields = $('#field_div');
+        // var div_fields = $('#field_div');
         var div_contents = $('#contents_div');
         div_contents.empty();//删除子元素
         var row_count = 0;
@@ -33,6 +36,7 @@ $(function () {
             var data_fields = data;
             //获得任务内容
             $.get('/tasks/' + task_id + '/contents', function (data) {
+                data=data.content;
                 row_count = data.length;
                 for (var i in data) {
                     content_row = data[i];
@@ -40,57 +44,10 @@ $(function () {
                     div_contents.append(content_row_html);
                     content_row_html.show();
                 }
-                addTipListener();
-                //新增一条内容
-                $('#add_content_row').click(function () {
-                    //mock 模拟服务端返回的数据,拼凑类似的 json
-                    var mock_contents = [];
-                    for (var i in data_fields) {
-                        var field = data_fields[i];
-                        mock_contents.push({
-                            "id": 0,
-                            "value": "",
-                            "isVerify": false,
-                            "field": field
-                        })
-                    }
-                    content_row = {
-                        "id": 0,
-                        "isSubmit": false,
-                        "isVerify": false,
-                        "items": mock_contents
-                    };
-                    content_row_html = getContentRow(task_id, content_row, row_count);
-                    row_count = row_count + 1;
-                    div_contents.append(content_row_html);
-                    content_row_html.show();
-                    addTipListener();
-                });
             });
         });
     }
 
-    //为输入框添加提示监听器,和检测合法监听器
-    function addTipListener() {
-        //鼠标接触会有小提示
-        $('[data-toggle="tooltip"]').mouseenter(function () {
-            $(this).tooltip("show");
-        });
-        //输入文字改变检测是否合法
-        $('input.content_value').bind("input", function () {
-            var text = $(this).val();
-            var verify = new RegExp($(this).attr('reg')).test(text);
-            var cls_succ = 'has-success';
-            var cls_error = 'has-error';
-            var cls = cls_succ;
-            $(this).parent('div').removeClass(cls_succ);
-            $(this).parent('div').removeClass(cls_error);
-            if (verify == false) {
-                cls = 'has-error';
-            }
-            $(this).parent('div').addClass(cls);
-        });
-    }
 
     //根据后端的 field id 生成前端的 dom id
     function getFieldId(fieldId) {
@@ -126,10 +83,14 @@ $(function () {
     // 每条 content 的 html
     function getContentRow(task_id, content, row_index) {
         row_html = $('#content_row_template').clone();
+        console.log(content)
         row_html.attr('id', getContentRowId(row_index));
-        row_html.find('.content_row_save').text(content.id > 0);
-        row_html.find('.content_row_submit').text(content.isSubmit);
-        row_html.find('.content_row_verify').text(content.isVerify);
+        row_html.find('.div_user').text(content.user.nickName);
+        row_html.find('.div_time').text(content.updatedAt);
+        // row_html.find('.content_row_verify').text(content.isVerify);
+        if(content.state!=0){//已经通过或拒绝
+            $('#verify_bus').hide()
+        }
         template = row_html.find('.content_item');
         template_item = template.clone();
         template.hide();
@@ -143,7 +104,7 @@ $(function () {
             div_field.text(field.name);
             div_field.attr('title', field.description);
             var input_value = item_html.find('.content_value');
-            input_value.val(item.value);
+            input_value.text(item.value);
             input_value.attr('reg', config.expression);
             input_value.attr('title', config.name + '(' + config.description + ')');
             input_value.attr('field_id', field.id);
@@ -151,44 +112,16 @@ $(function () {
             item_html.attr("display", "inline-block");
             div_contents.append(item_html);
         }
-        var bu_save = row_html.find('.content_save');
-        var bu_submit = row_html.find('.content_submit');
-        var bu_delete = row_html.find('.content_delete');
-        var saveSubmitListener = function (event) {
-            var content_id = getContentRowId(row_index);
-            if (isJsVerify(content_id)) {
-                data = getContentData(content_id);
-                data['submit'] = $(this).hasClass('content_submit');
-                var url = '/tasks/' + task_id + '/contents/';
-                if (content.id > 0) {//update
-                    $.put(url + content.id, data, function (res) {
-                        loadContntData();
-                    });
-                } else {
-                    $.post(url, data, function (res) {
-                        loadContntData();
-                    });
-                }
-            }
-        };
-        bu_save.click(saveSubmitListener);
-        bu_submit.click(saveSubmitListener);
-        bu_delete.click(function () {
-            if (content.id > 0) {
-                var r = confirm("确定删除?");
-                if (r == false) {
-                    return;
-                }
-                $.delete('/tasks/' + task_id + '/contents/' + content.id, function () {
-                    loadContntData();
-                });
-            } else {
-                var div_contents = $('#contents_div')
+        var bu_pass = row_html.find('.content_pass');//通过
+        var bu_dismiss = row_html.find('.content_dismiss');//驳回
+        var verifyListener = function () {
+            var isPass=$(this).hasClass('content_pass');
+            $.get("/contents/"+content.id+"?pass="+isPass,function () {
 
-                var content_id = getContentRowId(row_index);
-                $('#' + content_id).hide();
-            }
-        });
+            });
+        };
+        bu_pass.click(verifyListener);
+        bu_dismiss.click(verifyListener);
         return row_html;
     }
 

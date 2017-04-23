@@ -30,6 +30,7 @@ $(function () {
             var data_fields = data;
             //获得任务内容
             $.get('/tasks/' + task_id + '/contents', function (data) {
+                // data=data.content;TODO
                 row_count = data.length;
                 for (var i in data) {
                     content_row = data[i];
@@ -126,7 +127,7 @@ $(function () {
         row_html.attr('id', getContentRowId(row_index));
         row_html.find('.content_row_save').text(content.id > 0);
         row_html.find('.content_row_submit').text(content.isSubmit);
-        row_html.find('.content_row_verify').text(content.isVerify);
+        row_html.find('.content_row_verify').text(content.state);
         template = row_html.find('.content_item');
         template_item = template.clone();
         template.hide();

@@ -60,12 +60,28 @@ public class TaskController {
 
     @TokenValid
     @GetMapping("/task/{task_id}")
-    public ResponseEntity getTask(@PathVariable(value = "task_id") int taskId) {
+    public ResponseEntity getTask(@PathVariable(value = "task_id") int taskId, User user) {
         Task task = taskRepository.findOne(taskId);
         if (task == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(task);
+        if (!user.isAdmin()) {
+            return ResponseEntity.ok(task);
+        }
+        AdminTaskDetailResponse response = AdminTaskDetailResponse.wrap(task);
+        List<Content> contents = contentRepository.findByTask(task);
+        response.contentCount = contents.size();
+        response.passContentCount = response.dismissContentCount = response.waitContentCount = 0;
+        for (Content content : contents) {
+            if (content.getState() == 1) {
+                response.passContentCount++;
+            } else if (content.getState() == -1) {
+                response.dismissContentCount++;
+            } else {
+                response.waitContentCount++;
+            }
+        }
+        return ResponseEntity.ok(response);
     }
 
     @AdminValid
@@ -261,7 +277,6 @@ public class TaskController {
     }
 
 
-
     /**
      * 提交 task 的内容
      *
@@ -281,7 +296,7 @@ public class TaskController {
         Content content = new Content();
         Set<ContentItem> contentItems = new HashSet<>();
         if (task != null) {
-            if (task.getDeadlineTime().compareTo(new Date()) >= 0) {//超过截止时间
+            if (task.getDeadlineTime().compareTo(new Date()) <= 0) {//超过截止时间
                 return ResponseEntity.badRequest()
                         .body(new BaseMessageResponse("超过截止时间,不能提交"));
             }
@@ -312,7 +327,6 @@ public class TaskController {
                             contentItem.setValue(value);
                             contentItem.setContent(content);
                             contentItem.setField(field);
-                            contentItem.setVerify(false);//未审核
                             contentItems.add(contentItem);
                         }
                     }
@@ -335,6 +349,7 @@ public class TaskController {
                     .body(new BaseMessageResponse(failMsg));
         }
         content.setUpdatedAt(new Date());
+        content.setState(0);//未审核
         content.setItems(new ArrayList<>(contentItems));
         contentRepository.save(content);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -365,13 +380,13 @@ public class TaskController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new BaseMessageResponse("禁止访问"));
             }
-            if (task.getDeadlineTime().compareTo(new Date()) >= 0) {//超过截止时间
+            if (task.getDeadlineTime().compareTo(new Date()) <= 0) {//超过截止时间
                 return ResponseEntity.badRequest()
                         .body(new BaseMessageResponse("超过截止时间,不能提交"));
             }
             content.setTask(task);
             content.setUser(user);
-            content.setVerify(false);
+            content.setState(0);//未审核
             content.setSubmit(request.isSubmit());
             for (ContentItemRequest contentItemRequest : request.getData()) {
                 int fieldId = contentItemRequest.getFieldId();
@@ -396,7 +411,6 @@ public class TaskController {
                             for (ContentItem item : content.getItems()) {
                                 if (item.getField().equals(field)) {
                                     item.setValue(value);
-                                    item.setVerify(false);
                                     break;
                                 }
                             }

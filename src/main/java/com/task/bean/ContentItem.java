@@ -15,7 +15,6 @@ public class ContentItem implements Comparable<ContentItem> {
     @OneToOne
     private Field field;
     private String value;
-    private boolean isVerify;
 
     public ContentItem() {
     }
@@ -70,14 +69,6 @@ public class ContentItem implements Comparable<ContentItem> {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public boolean isVerify() {
-        return isVerify;
-    }
-
-    public void setVerify(boolean verify) {
-        isVerify = verify;
     }
 
     @Override
