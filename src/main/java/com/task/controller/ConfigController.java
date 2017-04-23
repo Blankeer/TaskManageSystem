@@ -2,6 +2,7 @@ package com.task.controller;
 
 import com.task.annotation.AdminValid;
 import com.task.bean.Config;
+import com.task.bean.request.UpdateConfigRequest;
 import com.task.repository.ConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -41,5 +42,30 @@ public class ConfigController {
                                                String key) {
         Pageable pageable = new PageRequest(page, size);
         return ResponseEntity.ok(configRepository.findByNameContaining(pageable, key));
+    }
+
+    @AdminValid
+    @GetMapping("/configs/{cid}")
+    public ResponseEntity getConfigDetail(@PathVariable int cid) {
+        Config config = configRepository.findOne(cid);
+        if (config == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(config);
+    }
+
+    @AdminValid
+    @PutMapping("/configs/{cid}")
+    public ResponseEntity updateConfig(@PathVariable int cid,
+                                       @RequestBody UpdateConfigRequest request) {
+        Config config = configRepository.findOne(cid);
+        if (config == null) {
+            return ResponseEntity.notFound().build();
+        }
+        config.setName(request.name);
+        config.setDescription(request.description);
+        config.setExpression(request.expression);
+        configRepository.save(config);
+        return ResponseEntity.ok().build();
     }
 }
