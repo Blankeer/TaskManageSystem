@@ -6,7 +6,21 @@ $.ajaxx = function (method, url, data, succ, fail) {
         dataType: "json",
         data: JSON.stringify(data),
         success: succ,
-        error: fail,
+        error: function (data) {
+            data_json = data.responseJSON;
+            if (data.status == 500) {
+                alert('服务器内部错误');
+            } else if (data_json.message) {
+                alert(data_json.message);
+            } else {
+                if (data.status == 400) {
+                    alert('输入错误')
+                } else {
+                    alert(data.responseText);
+                }
+            }
+            fail(data);
+        },
         beforeSend: function (req) {
 
         },
