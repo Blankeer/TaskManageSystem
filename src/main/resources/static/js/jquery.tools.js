@@ -8,7 +8,9 @@ $.ajaxx = function (method, url, data, succ, fail) {
         success: succ,
         error: function (data) {
             data_json = data.responseJSON;
-            if (data.status == 500) {
+            if (data.status == 401) {
+                location.href='/login.html';
+            } else if (data.status == 500) {
                 alert('服务器内部错误');
             } else if (data_json.message) {
                 alert(data_json.message);
@@ -21,8 +23,11 @@ $.ajaxx = function (method, url, data, succ, fail) {
             }
             fail(data);
         },
-        beforeSend: function (req) {
-
+        beforeSend: function (request) {
+            var token = localStorage.getItem('token');
+            if (token) {
+                request.setRequestHeader("token", token);
+            }
         },
         complete: function (req) {
 
