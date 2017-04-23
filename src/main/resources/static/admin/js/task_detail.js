@@ -20,6 +20,10 @@ $(function () {
             $('#content_count').text(data.contentCount);
             $('#wait_content_count').text(data.waitContentCount);
             $('#pass_content_count').text(data.passContentCount);
+            //导出数据
+            $('#export_data').click(function () {
+                window.open('/tasks/'+task_id+'/contents/export');
+            });
             loadContntData();
         });
 

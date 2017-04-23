@@ -72,6 +72,16 @@ public class Content {
         return state;
     }
 
+    public String getStateStr() {
+        String stateStr = "未审核";
+        if (state == 1) {
+            stateStr = "审核通过";
+        } else if (state == -1) {
+            stateStr = "审核驳回";
+        }
+        return stateStr;
+    }
+
     public void setState(int state) {
         this.state = state;
     }
