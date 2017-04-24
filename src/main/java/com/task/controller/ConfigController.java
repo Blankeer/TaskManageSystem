@@ -18,18 +18,22 @@ public class ConfigController {
     @Autowired
     ConfigRepository configRepository;
 
-    //    @AdminValid
-    @PutMapping("/configs")
+    @AdminValid
+    @PostMapping("/configs")
     public ResponseEntity addConfig(@RequestBody Config config) {
-        // TODO: 17-1-27 验证
-        return ResponseEntity.ok().build();
+        configRepository.save(config);
+        return ResponseEntity.ok(config);
     }
 
-    //    @AdminValid
+    @AdminValid
     @DeleteMapping("/configs/{id}")
     public ResponseEntity deleteConfig(@PathVariable("id") int id) {
-        // TODO: 17-1-27 验证
-        return ResponseEntity.ok().build();
+        Config config = configRepository.findOne(id);
+        if (config == null) {
+            return ResponseEntity.notFound().build();
+        }
+        configRepository.delete(config);
+        return ResponseEntity.noContent().build();
     }
 
     @AdminValid

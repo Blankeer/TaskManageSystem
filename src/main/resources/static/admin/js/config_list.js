@@ -12,6 +12,8 @@ $(document).ready(function () {
     //config 详情
     $('#addConfigDialog').on('show.bs.modal', function () {
         if (click_config_id > 0) {
+            $('#dialog_field_title').text('修改规则');
+            $('#config_delete').show();
             $.get('/configs/' + click_config_id, function (data) {
                 $('#dialog_config_name').val(data.name);
                 $('#dialog_config_desc').val(data.description);
@@ -25,6 +27,26 @@ $(document).ready(function () {
                     'expression': $('#dialog_config_reg').val()
                 };
                 $.put('/configs/' + click_config_id, data, function () {
+                    //TODO
+                });
+            });
+            //删除
+            $('#config_delete').click(function () {
+                $.delete('/configs/' + click_config_id, function () {
+                    //TODO
+                })
+            })
+        } else {
+            $('#dialog_field_title').text('添加规则');
+            $('#config_delete').hide();
+            //add
+            $('#dialog_config_submit').click(function () {
+                var data = {
+                    'name': $('#dialog_config_name').val(),
+                    'description': $('#dialog_config_desc').val(),
+                    'expression': $('#dialog_config_reg').val()
+                };
+                $.push('/configs/', data, function () {
                     //TODO
                 });
             });

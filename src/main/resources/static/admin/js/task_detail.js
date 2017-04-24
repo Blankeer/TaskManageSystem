@@ -22,7 +22,7 @@ $(function () {
             $('#pass_content_count').text(data.passContentCount);
             //导出数据
             $('#export_data').click(function () {
-                window.open('/tasks/'+task_id+'/contents/export');
+                window.open('/tasks/' + task_id + '/contents/export');
             });
             loadContntData();
         });
@@ -40,7 +40,7 @@ $(function () {
             var data_fields = data;
             //获得任务内容
             $.get('/tasks/' + task_id + '/contents', function (data) {
-                data=data.content;
+                data = data.content;
                 row_count = data.length;
                 for (var i in data) {
                     content_row = data[i];
@@ -92,7 +92,7 @@ $(function () {
         row_html.find('.div_user').text(content.user.nickName);
         row_html.find('.div_time').text(content.updatedAt);
         // row_html.find('.content_row_verify').text(content.isVerify);
-        if(content.state!=0){//已经通过或拒绝
+        if (content.state != 0) {//已经通过或拒绝
             $('#verify_bus').hide()
         }
         template = row_html.find('.content_item');
@@ -119,8 +119,8 @@ $(function () {
         var bu_pass = row_html.find('.content_pass');//通过
         var bu_dismiss = row_html.find('.content_dismiss');//驳回
         var verifyListener = function () {
-            var isPass=$(this).hasClass('content_pass');
-            $.get("/contents/"+content.id+"?pass="+isPass,function () {
+            var isPass = $(this).hasClass('content_pass');
+            $.get("/contents/" + content.id + "?pass=" + isPass, function () {
 
             });
         };
@@ -159,4 +159,15 @@ $(function () {
     function getContentRowId(row_index) {
         return 'content-row-' + row_index;
     }
+
+    //删除任务
+    $('#delete').click(function () {
+        var r=confirm("确定删除?");
+        if (r==false){
+            return;
+        }
+        $.delete('/tasks/' + task_id, function () {
+            $('#back').click();
+        })
+    });
 });
