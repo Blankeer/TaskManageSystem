@@ -7,8 +7,9 @@ import com.task.bean.request.ChangePwdRequest;
 import com.task.bean.request.LoginRequest;
 import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.UserListResponse;
+import com.task.repository.ContentRepository;
+import com.task.repository.TaskRepository;
 import com.task.repository.UserRepository;
-import com.task.service.user.UserService;
 import com.task.utils.Md5Utils;
 import com.task.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,11 @@ import java.util.Random;
 @RestController
 public class UserController {
     @Autowired
-    UserService userService;
-    @Autowired
     UserRepository userRepository;
+    @Autowired
+    ContentRepository contentRepository;
+    @Autowired
+    TaskRepository taskRepository;
 
     public String getToken(User user) {
         return Md5Utils.md5(new Random().nextInt(1024) + user.getEmail()
@@ -71,19 +74,21 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody LoginRequest request) {
-        // TODO: 17-1-26 验证
-        boolean res = userService.register(request.getEmail(), request.getPwd());
-        if (!res) {
+        User user = userRepository.findByEmail(request.getEmail());
+        if (user != null) {
             return new ResponseEntity<>(
-                    new BaseMessageResponse("用户已存在"), HttpStatus.FORBIDDEN);
+                    new BaseMessageResponse("用户已存在"), HttpStatus.BAD_REQUEST);
         }
+        user = new User();
+        user.setEmail(request.getEmail());
+        user.setPwd(Md5Utils.md5(request.getPwd()));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @TokenValid
     @GetMapping("/logout")
     public ResponseEntity logout(User user) {
-        userService.logout(user);
+        clearToken(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -93,13 +98,15 @@ public class UserController {
         if (TextUtils.isEmpty(request.getOldPwd())
                 || TextUtils.isEmpty(request.getNewPwd())) {
             // TODO: 17-1-27 密码验证
-            return ResponseEntity.badRequest().body("旧密码或新密码为空");
+            return ResponseEntity.badRequest()
+                    .body(new BaseMessageResponse("旧密码或新密码为空"));
         }
-        boolean res = userService.changePwd(user, request.getOldPwd().trim(),
-                request.getNewPwd().trim());
-        if (!res) {
-            return ResponseEntity.badRequest().body("旧密码错误");
+        if (!user.getPwd().equals(Md5Utils.md5(request.getOldPwd()))) {
+            return ResponseEntity.badRequest()
+                    .body(new BaseMessageResponse("旧密码错误"));
         }
+        user.setPwd(Md5Utils.md5(request.getNewPwd()));
+        userRepository.save(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -110,25 +117,64 @@ public class UserController {
                                                  String nickname) {
         if (TextUtils.isEmpty(nickname)) {
             // TODO: 17-1-27 昵称验证
-            return ResponseEntity.badRequest().body("昵称不规范");
+            return ResponseEntity.badRequest()
+                    .body(new BaseMessageResponse("昵称不规范"));
         }
-        userService.setNiceName(user, nickname);
+        user.setNickName(nickname);
+        userRepository.save(user);
         return ResponseEntity.ok().build();
     }
 
     @AdminValid
     @GetMapping("/users")
     public ResponseEntity getUserList(@RequestParam(value = "page", defaultValue = "0")
-                                              Integer page,
+                                              int page,
                                       @RequestParam(value = "size", defaultValue = "10")
-                                              Integer size) {
+                                              int size) {
         Pageable pageable = new PageRequest(page, size);
         Page<User> users = userRepository.findAll(pageable);
-        return ResponseEntity.ok(users.map(new Converter<User, UserListResponse>() {
+        Page<UserListResponse> res = users.map(new Converter<User, UserListResponse>() {
             @Override
             public UserListResponse convert(User user) {
                 return UserListResponse.wrap(user);
             }
-        }));
+        });
+        return ResponseEntity.ok(res);
+    }
+
+    @AdminValid
+    @GetMapping("/users/{uid}")
+    public ResponseEntity getUserDetail(@PathVariable int uid) {
+        User user = userRepository.findOne(uid);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(UserListResponse.wrap(user));
+    }
+
+    @AdminValid
+    @PutMapping("/users/{uid}")
+    public ResponseEntity updateUser(@PathVariable int uid,
+                                     @RequestBody UserListResponse request) {
+        User user = userRepository.findOne(uid);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        user.setEmail(request.email);
+        user.setNickName(request.nickName);
+        userRepository.save(user);
+        return ResponseEntity.ok(UserListResponse.wrap(user));
+    }
+
+    @AdminValid
+    @DeleteMapping("/users/{uid}")
+    public ResponseEntity deleteUser(@PathVariable int uid) {
+        User user = userRepository.findOne(uid);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        userRepository.delete(user);
+        return ResponseEntity.noContent().build();
     }
 }

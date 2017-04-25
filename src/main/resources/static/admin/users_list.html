@@ -1,0 +1,65 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>login</title>
+
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/task_list.css" type="text/css"/>
+
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.tools.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.twbsPagination.min.js"></script>
+    <script type="text/javascript" src="js/users_list.js"></script>
+</head>
+<body>
+<table id="table_users_list">
+    <thead>
+    <tr>
+        <th>名称</th>
+    </tr>
+    </thead>
+    <tbody id="table_body">
+
+    </tbody>
+
+    <ul id="pagination" class="pagination-sm"></ul>
+</table>
+
+<!-- 修改user -->
+<div class="modal fade" id="addUserDialog" tabindex="2" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    修改用户信息
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    邮箱:
+                    <input id="dialog_user_email" class="form-control input_text attr_value">
+                </div>
+                <div>
+                    昵称:
+                    <input id="dialog_user_nickname" class="form-control input_text attr_value">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        id="user_delete">删除
+                </button>
+                <button type="button" class="btn btn-primary" id="dialog_user_submit">
+                    确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</body>
+</html>
