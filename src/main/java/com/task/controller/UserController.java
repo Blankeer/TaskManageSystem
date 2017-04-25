@@ -7,6 +7,7 @@ import com.task.bean.request.ChangePwdRequest;
 import com.task.bean.request.LoginRequest;
 import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.UserListResponse;
+import com.task.bean.response.UserLoginResponse;
 import com.task.repository.ContentRepository;
 import com.task.repository.TaskRepository;
 import com.task.repository.UserRepository;
@@ -47,7 +48,6 @@ public class UserController {
 
     @PostMapping("/login/")
     public ResponseEntity login(@RequestBody LoginRequest request) {
-//        Object obj = userService.login(request.getEmail(), request.getPwd());
         if (TextUtils.isEmpty(request.getEmail())
                 || TextUtils.isEmpty(request.getPwd())) {
             return new ResponseEntity<>(
@@ -60,8 +60,7 @@ public class UserController {
             if (user.getPwd().equals(pwd)) {
                 user.setToken(getToken(user));
                 userRepository.save(user);
-                user.setPwd("");
-                return ResponseEntity.ok(user);
+                return ResponseEntity.ok(UserLoginResponse.wrap(user));
             } else {
                 return new ResponseEntity<>(
                         new BaseMessageResponse("密码不正确"), HttpStatus.BAD_REQUEST);
