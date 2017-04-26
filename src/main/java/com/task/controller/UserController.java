@@ -176,4 +176,10 @@ public class UserController {
         userRepository.delete(user);
         return ResponseEntity.noContent().build();
     }
+
+    @TokenValid
+    @GetMapping("/user/profile")
+    public ResponseEntity getUserProfile(User user) {
+        return ResponseEntity.ok(UserListResponse.wrap(user));
+    }
 }
