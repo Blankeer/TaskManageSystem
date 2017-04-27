@@ -1,0 +1,8 @@
+<html>
+<body>
+<h3>${email} :</h3>
+<p>
+     欢迎注册,你的验证码是${captcha},请尽快输入验证.
+</p>
+</body>
+</html>
