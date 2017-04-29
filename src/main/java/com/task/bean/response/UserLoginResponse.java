@@ -10,6 +10,7 @@ public class UserLoginResponse {
     public String email;
     public String nickName;
     public String token;
+    public boolean isAdmin;
 
     public static UserLoginResponse wrap(User user) {
         UserLoginResponse userListResponse = new UserLoginResponse();
@@ -17,6 +18,7 @@ public class UserLoginResponse {
         userListResponse.email = user.getEmail();
         userListResponse.nickName = user.getNickName();
         userListResponse.token = user.getToken();
+        userListResponse.isAdmin=user.isAdmin();
         return userListResponse;
     }
 

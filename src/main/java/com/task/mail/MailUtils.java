@@ -26,12 +26,12 @@ public class MailUtils {
     @Value("${spring.mail.username}")
     private String username;
 
-    public boolean sendRegisterEmail(String email, String captcha) {
+    public boolean sendCaptchaEmail(String email, String captcha) {
         Map<String, Object> contents = new HashMap<>();
         contents.put("email", email);
         contents.put("captcha", captcha);
-        return sendTemplateMail(email, "请验证你的注册信息", "register.vm",
-                contents);
+        return sendTemplateMail(email, "请输入你的验证码",
+                "get_captcha.vm", contents);
     }
 
     private boolean sendTemplateMail(String sendTo, String title,

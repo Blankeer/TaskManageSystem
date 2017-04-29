@@ -6,8 +6,17 @@ package com.task.bean.request;
 public class LoginRequest {
     private String email;
     private String pwd;
+    private String captcha;//验证码
 
     public LoginRequest() {
+    }
+
+    public String getCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
     }
 
     public String getEmail() {

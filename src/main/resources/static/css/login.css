@@ -1,12 +1,14 @@
-.form-bg{
+.form-bg {
     background: #00b4ef;
 }
-.page{
-  width: 450px;
-  padding: 8% 0 0;
-  margin: auto;
+
+.page {
+    width: 450px;
+    padding: 8% 0 0;
+    margin: auto;
 }
-.form{
+
+.form {
     position: relative;
     z-index: 1;
     background: #FFFFFF;
@@ -16,13 +18,15 @@
     text-align: center;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
-.form-horizontal{
+
+.form-horizontal {
     background: #fff;
     padding-bottom: 40px;
     border-radius: 15px;
     text-align: center;
 }
-.form-horizontal .heading{
+
+.form-horizontal .heading {
     display: block;
     font-size: 35px;
     font-weight: 700;
@@ -30,27 +34,32 @@
     border-bottom: 1px solid #f0f0f0;
     margin-bottom: 30px;
 }
-.form-horizontal .form-group{
+
+.form-horizontal .form-group {
     padding: 0 40px;
     margin: 0 0 25px 0;
     position: relative;
 }
-.form-horizontal .input_text{
+
+.form-horizontal .input_text {
     padding: 0 20px 0 45px;
     height: 40px;
 }
-.form-horizontal .form-group i{
+
+.form-horizontal .form-group i {
     position: absolute;
     top: 12px;
     left: 60px;
     font-size: 17px;
     color: #c8c8c8;
 }
-.form-horizontal .checkbox_label{
+
+.form-horizontal .checkbox_label {
     float: left;
     margin-left: 3px;
 }
-.form-horizontal .bu_login{
+
+.form-horizontal .bu_login {
     float: center;
     width: 200px;
     font-size: 14px;
@@ -59,7 +68,8 @@
     text-transform: capitalize;
     transition: all 0.5s ease 0s;
 }
-.form-horizontal .bu_register{
+
+.form-horizontal .bu_register {
     float: center;
     width: 200px;
     font-size: 14px;
@@ -68,23 +78,39 @@
     text-transform: capitalize;
     transition: all 0.5s ease 0s;
 }
+
 .register-form {
-  display: none;
+    display: none;
 }
-.forget-form{
-  display: none;
+
+.forget-form {
+    display: none;
 }
-.forget-form-2{
-  display: none;
+
+.forget-form-2 {
+    display: none;
 }
-.label_forget{
+
+.label_forget {
     float: right;;
-    margin-top: 6px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 40px;
+    line-height: 40px;
+    margin-right: 50px;
 }
-.bu_getcapcha{
-    float:right;
+
+.bu_getcapcha {
+    float: right;
     height: 40px;
 }
-.text_forget_email{
+
+.text_forget_email {
     width: 240px;
+}
+
+.bu_capcha {
+    width: 100px;
+    height: 40px;
 }

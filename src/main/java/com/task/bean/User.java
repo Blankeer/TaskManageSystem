@@ -3,6 +3,7 @@ package com.task.bean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -18,6 +19,10 @@ public class User {
     private String nickName;
     private boolean isAdmin;
     private String token;
+    private String captcha;//验证码
+    private Date captchaCreatedAt;//验证码生成时间,用于判断过期
+    private boolean isActivate = false;//激活状态,主要用于注册时的验证状态
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Content> contents;
@@ -37,6 +42,30 @@ public class User {
         User user = (User) o;
 
         return id == user.id;
+    }
+
+    public String getCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
+    }
+
+    public Date getCaptchaCreatedAt() {
+        return captchaCreatedAt;
+    }
+
+    public void setCaptchaCreatedAt(Date captchaCreatedAt) {
+        this.captchaCreatedAt = captchaCreatedAt;
+    }
+
+    public boolean isActivate() {
+        return isActivate;
+    }
+
+    public void setActivate(boolean activate) {
+        isActivate = activate;
     }
 
     public Set<Task> getLikeTasks() {

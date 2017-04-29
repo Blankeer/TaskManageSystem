@@ -1,98 +1,118 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>login</title>
 
-<link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-<link rel="stylesheet" href="css/login.css" type="text/css" />
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/login.css" type="text/css"/>
 
-<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="js/login.js"></script>
+    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.tools.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
 </head>
 <body>
-  <div class="page">
-      <div class="form">
+<div class="page">
+    <div class="form">
         <form class="form-horizontal login-form">
-             <span class="heading">用户登录</span>
-             <div class="form-group">
-                          <input type="email" class="form-control input_text" id="account" placeholder="电子邮件">
-                          <i class="fa fa-user"></i>
+            <span class="heading">表单管理系统</span>
+            <div class="form-group">
+                <input type="email" class="form-control input_text" id="login_account" placeholder="电子邮件">
+                <i class="fa fa-user"></i>
             </div>
             <div class="form-group">
-                          <input type="password" class="form-control input_text" id="password" placeholder="密码">
-                                      <i class="fa fa-lock"></i>
+                <input type="password" class="form-control input_text" id="login_password" placeholder="密码">
+                <i class="fa fa-lock"></i>
 
+                <a class="label_forget" href="#">忘记密码?</a>
             </div>
             <div class="form-group">
-                          <div>
-                            <label class="checkbox checkbox_label">
-                              <input id="" type="checkbox" checked="true">记住我
-                            </label>
-                          </div>
-                          <a class="label_forget" href="#">忘记密码?</a>
+                <div>
+                    <label class="checkbox checkbox_label" style="display: none;">
+                        <input id="" type="checkbox" checked="true">记住我
+                    </label>
+                </div>
             </div>
             <div class="form-group">
-            <button type="submit" class="btn btn-primary bu_login" id="bu_login">登录</button>
-          </div>
+                <button class="btn btn-primary bu_login" id="bu_login">登录</button>
+            </div>
             <p class="message">还没有账户? <a href="#" class="a_register">立刻创建</a></p>
         </form>
         <form class="form-horizontal register-form">
-             <span class="heading">用户注册</span>
-             <div class="form-group">
-                          <input type="email" class="form-control input_text" id="account" placeholder="电子邮件">
-                          <i class="fa fa-user"></i>
+            <span class="heading">用户注册</span>
+            <div class="form-group">
+                <input type="email" class="form-control input_text" id="reg_account" placeholder="电子邮件">
+                <i class="fa fa-user"></i>
             </div>
             <div class="form-group">
-                          <input type="password" class="form-control input_text" id="password" placeholder="密码">
-                                      <i class="fa fa-lock"></i>
+                <input type="password" class="form-control input_text" id="reg_password" placeholder="密码">
+                <i class="fa fa-lock"></i>
             </div>
             <div class="form-group">
-                          <input type="password" class="form-control input_text" id="password_agin" placeholder="再次输入密码">
-                                      <i class="fa fa-lock"></i>
+                <input type="password" class="form-control input_text" id="reg_password_agin" placeholder="再次输入密码">
+                <i class="fa fa-lock"></i>
             </div>
             <div class="form-group">
-                            <button type="submit" class="btn btn-primary bu_register" id="bu_register">注册</button>
+                <div style="float:left">
+                    <input type="text" class="form-control input_text text_forget_email" id="reg_capcha"
+                           placeholder="验证码">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div style="float:right">
+                    <button class="btn btn-primary bu_capcha" id="reg_get_capcha">获取验证码</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary bu_register" id="bu_register">注册</button>
             </div>
             <p class="message">已经有了一个账户? <a href="#" class="a_login">立刻登录</a></p>
         </form>
         <form class="form-horizontal forget-form">
-             <span class="heading">找回密码</span>
-             <div class="form-group">
-                              <div style="float:left">
-                                  <input type="email" class="form-control input_text text_forget_email" id="account" placeholder="电子邮件">
-                                  <i class="fa fa-user"></i>
-                              </div>
-                              <div style="float:right">
-                                  <button class="btn btn-primary bu_getcapcha">获取验证码</button>
-                              </div>
+            <span class="heading">找回密码</span>
+            <div class="form-group">
+                <input type="email" class="form-control input_text" id="findpwd_account" placeholder="电子邮件">
+                <i class="fa fa-user"></i>
             </div>
             <div class="form-group">
-                         <input type="text" class="form-control input_text" id="account" placeholder="验证码">
-                         <i class="fa fa-user"></i>
-           </div>
+                <div style="float:left">
+                    <input type="text" class="form-control input_text text_forget_email" id="findpwd_capcha"
+                           placeholder="验证码">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div style="float:right">
+                    <button class="btn btn-primary bu_capcha" id="findpwd_get_capcha">获取验证码</button>
+                </div>
+            </div>
             <div class="form-group">
-                            <button type="submit" class="btn btn-primary bu_register" id="bu_getcapcha">获取验证码</button>
+                <input type="password" class="form-control input_text" id="findpwd_password" placeholder=" 新密码">
+                <i class="fa fa-lock"></i>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control input_text" id="findpwd_password_agin" placeholder="再次输入新密码">
+                <i class="fa fa-lock"></i>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary bu_register" id="findpwd_submit">提交</button>
             </div>
             <p class="message">已经有了一个账户? <a href="#" class="a_login">立刻登录</a></p>
         </form>
         <form class="form-horizontal forget-form-2">
-             <span class="heading">重设密码</span>
-             <div class="form-group">
-                           <input type="password" class="form-control input_text" id="password" placeholder="新密码">
-                                       <i class="fa fa-lock"></i>
-             </div>
-             <div class="form-group">
-                           <input type="password" class="form-control input_text" id="password_agin" placeholder="再次输入密码">
-                                       <i class="fa fa-lock"></i>
-             </div>
+            <span class="heading">重设密码</span>
             <div class="form-group">
-                            <button type="submit" class="btn btn-primary bu_register" id="bu_reset_pwd">提交</button>
+                <input type="password" class="form-control input_text" id="new_password" placeholder="新密码">
+                <i class="fa fa-lock"></i>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control input_text" id="new_password_agin" placeholder="再次输入密码">
+                <i class="fa fa-lock"></i>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary bu_register" id="bu_reset_pwd">提交</button>
             </div>
             <p class="message">已经有了一个账户? <a href="#" class="a_login">立刻登录</a></p>
         </form>
-</div>
+    </div>
 </div>
 </body>
 </html>

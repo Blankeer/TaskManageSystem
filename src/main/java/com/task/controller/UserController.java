@@ -8,10 +8,13 @@ import com.task.bean.request.LoginRequest;
 import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.UserListResponse;
 import com.task.bean.response.UserLoginResponse;
+import com.task.config.ProjectConfig;
+import com.task.mail.MailUtils;
 import com.task.repository.ContentRepository;
 import com.task.repository.TaskRepository;
 import com.task.repository.UserRepository;
 import com.task.utils.Md5Utils;
+import com.task.utils.RegexUtils;
 import com.task.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -22,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -35,11 +39,41 @@ public class UserController {
     ContentRepository contentRepository;
     @Autowired
     TaskRepository taskRepository;
+    @Autowired
+    MailUtils mailUtils;
 
     public String getToken(User user) {
         return Md5Utils.md5(new Random().nextInt(1024) + user.getEmail()
                 + System.currentTimeMillis());
     }
+
+    //随机生成验证码
+    private String getRandomCaptcha() {
+        Random random = new Random();
+        return ((char) (random.nextInt(25) + 'A')) +
+                "" + (random.nextInt(89999) + 10000);
+    }
+
+    //检查验证码频率限制
+    private boolean checkCaptchaFrequency(Date oldDate) {
+        if (oldDate == null) {
+            return true;
+        }
+        Date now = new Date();
+        long dt = now.getTime() - oldDate.getTime();
+        return dt > ProjectConfig.FREQUENCY_CAPTCHA * 60 * 1000;
+    }
+
+    //检查验证码是否过期
+    private boolean checkCaptchaExpire(Date oldDate) {
+        if (oldDate == null) {
+            return true;
+        }
+        Date now = new Date();
+        long dt = now.getTime() - oldDate.getTime();
+        return dt < ProjectConfig.EXPIRE_CAPTCHA * 60 * 1000;
+    }
+
 
     public void clearToken(User user) {
         user.setToken("");
@@ -56,8 +90,8 @@ public class UserController {
         String account = request.getEmail().trim();
         String pwd = request.getPwd().trim();
         User user = userRepository.findByEmail(account);
-        if (user != null) {
-            if (user.getPwd().equals(pwd)) {
+        if (user != null && user.isActivate()) {
+            if (user.getPwd().equals(Md5Utils.md5(pwd))) {
                 user.setToken(getToken(user));
                 userRepository.save(user);
                 return ResponseEntity.ok(UserLoginResponse.wrap(user));
@@ -74,14 +108,88 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail());
-        if (user != null) {
+        if (user != null && user.isActivate()) {
             return new ResponseEntity<>(
                     new BaseMessageResponse("用户已存在"), HttpStatus.BAD_REQUEST);
         }
-        user = new User();
+        if (TextUtils.isEmpty(request.getCaptcha())
+                || user == null || TextUtils.isEmpty(user.getCaptcha())) {
+            return new ResponseEntity<>(
+                    new BaseMessageResponse("请先获取验证码"), HttpStatus.BAD_REQUEST);
+        }
+        if (!checkCaptchaExpire(user.getCaptchaCreatedAt())) {
+            return new ResponseEntity<>(
+                    new BaseMessageResponse("验证码过期,请重新获取"), HttpStatus.BAD_REQUEST);
+        }
+        if (!request.getCaptcha().equalsIgnoreCase(user.getCaptcha())) {
+            return new ResponseEntity<>(
+                    new BaseMessageResponse("验证码输入不正确"), HttpStatus.BAD_REQUEST);
+        }
         user.setEmail(request.getEmail());
         user.setPwd(Md5Utils.md5(request.getPwd()));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        user.setActivate(true);
+        user.setCaptcha("");
+        userRepository.save(user);
+        return ResponseEntity.ok(new BaseMessageResponse(""));
+    }
+
+    @PostMapping("/find-pwd")
+    public ResponseEntity findPwd(@RequestBody LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail());
+        if (user == null || !user.isActivate()) {
+            return new ResponseEntity<>(
+                    new BaseMessageResponse("用户不存在"), HttpStatus.BAD_REQUEST);
+        }
+        if (TextUtils.isEmpty(request.getCaptcha())
+                || TextUtils.isEmpty(user.getCaptcha())) {
+            return new ResponseEntity<>(
+                    new BaseMessageResponse("请先获取验证码"), HttpStatus.BAD_REQUEST);
+        }
+        if (!checkCaptchaExpire(user.getCaptchaCreatedAt())) {
+            return new ResponseEntity<>(
+                    new BaseMessageResponse("验证码过期,请重新获取"), HttpStatus.BAD_REQUEST);
+        }
+        if (!request.getCaptcha().equalsIgnoreCase(user.getCaptcha())) {
+            return new ResponseEntity<>(
+                    new BaseMessageResponse("验证码输入不正确"), HttpStatus.BAD_REQUEST);
+        }
+        user.setPwd(Md5Utils.md5(request.getPwd()));
+        user.setActivate(true);
+        user.setCaptcha("");
+        userRepository.save(user);
+        return ResponseEntity.ok(new BaseMessageResponse(""));
+    }
+
+    @GetMapping("/captcha")
+    public ResponseEntity getCaptcha(@RequestParam String account) {
+        User user = userRepository.findByEmail(account);
+        if (!RegexUtils.isEmail(account)) {
+            return new ResponseEntity(new BaseMessageResponse("邮箱格式不正确")
+                    , HttpStatus.BAD_REQUEST);
+        }
+        if (user != null && !checkCaptchaFrequency(user.getCaptchaCreatedAt())) {
+            return new ResponseEntity(new BaseMessageResponse("请求过于频繁")
+                    , HttpStatus.BAD_REQUEST);
+        }
+        String captcha = getRandomCaptcha();//获得随机验证码
+        if (user != null && checkCaptchaExpire(user.getCaptchaCreatedAt())) {//如果验证码没有过期
+            captcha = user.getCaptcha();//重复使用未过期的验证码
+        }
+        boolean succ = mailUtils.sendCaptchaEmail(account, captcha);
+        if (succ) {
+            if (user == null) {
+                user = new User();
+            }
+            user.setEmail(account);
+            user.setCaptcha(captcha);
+            user.setCaptchaCreatedAt(new Date());
+            user.setActivate(false);
+            userRepository.save(user);
+            return ResponseEntity.ok(new BaseMessageResponse(""));
+        } else {
+            return new ResponseEntity(new BaseMessageResponse("发送验证码失败,请联系管理员")
+                    , HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @TokenValid
