@@ -82,6 +82,7 @@ public class UserController {
 
     @PostMapping("/login/")
     public ResponseEntity login(@RequestBody LoginRequest request) {
+        //首先判断账号和密码是否为空
         if (TextUtils.isEmpty(request.getEmail())
                 || TextUtils.isEmpty(request.getPwd())) {
             return new ResponseEntity<>(

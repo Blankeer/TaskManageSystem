@@ -28,7 +28,7 @@ $(function () {
         //获得任务所有的字段
         $.get('/tasks/' + task_id + '/fields', function (data) {
             var data_fields = data;
-            //获得任务内容
+            //获得表单内容
             $.get('/tasks/' + task_id + '/contents', function (data) {
                 // data=data.content;TODO
                 row_count = data.length;
@@ -197,7 +197,7 @@ $(function () {
             return true;
         }
         error_inputs.each(function (i) {
-            $(this).children('input').tooltip("show");
+            $(this).children('input').tooltip("show");//
         });
         return false;
     }
