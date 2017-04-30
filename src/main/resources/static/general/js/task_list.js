@@ -27,9 +27,6 @@ function initPagination() {
                 });
             }
         });
-        for (var i in data.content) {
-            addTaskRowHtml(data.content[i]);
-        }
     });
 }
 //ajax 之后,把 每行的task 数据转换成 html, 添加到页面
@@ -39,28 +36,38 @@ function addTaskRowHtml(item_data) {
 }
 //ajax,获得任务状态
 function getTaskState(task_id) {
-    $.get("/tasks/" + task_id + "/contents", function (data) {
-        //todo 根据是否提交，通过css改变颜色等
+    $.get("/tasks/" + task_id + "/content/info", function (data) {
         var task_row = $("#" + getTaskViewId(task_id));
-        task_row.append(data.submit);
-        task_row.append(data.verify);
+        var task_state = task_row.find('.task_state');
+        task_state.empty();
+        var tag = $("<span class='label'></span>");
+        tag.addClass('task_label');
+        if (data.verify) {//审核通过
+            tag.addClass('label-success');
+            tag.text("已通过");
+        } else if (data.submit) {//已提交,但未审核
+            tag.addClass('label-info');
+            tag.text("未审核");
+        } else {
+            tag.addClass('label-info');
+            tag.text("未提交");
+        }
+        task_state.append(tag);
     });
 }
 //解析 ajax ,返回每行数据
 function getTaskRowItem(data) {
-    var item_html = $("<div></div>");
+    var item_html = $("#task_item_template").clone();
     item_html.attr('id', getTaskViewId(data.id));
-    var item = $("<div></div>");
-    item.addClass('task_item');
-    var item_title = item.clone();
+    var item_title = item_html.find(".task_title");
+    var task_submit = item_html.find(".task_submit");
+    var task_verify = item_html.find(".task_verify");
+    var task_pubtime = item_html.find(".task_pubtime");
+    var task_endtime = item_html.find(".task_endtime");
     item_title.text(data.title);
-    item_html.append(item_title);
-    var item_pubtime = item.clone();
-    var item_endtime = item.clone();
-    item_pubtime.text(formatDate(data.publishTime));
-    item_endtime.text(formatDate(data.deadlineTime));
-    item_html.append(item_pubtime);
-    item_html.append(item_endtime);
+    task_pubtime.text(formatDate(data.publishTime));
+    task_endtime.text(formatDate(data.deadlineTime));
+    item_html.show();
     //跳转到任务详情
     item_html.click(function () {
         localStorage.setItem('click_task_id', data.id);

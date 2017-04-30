@@ -82,31 +82,6 @@ body {
 
 }
 
-#ad_setting_ul li {
-    padding-left: 30px;
-    line-height: 30px !important;
-}
-
-#ad_setting_ul li:hover {
-    background: black;
-    border-radius: 5px;
-    color: white;
-}
-
-.ad_setting_ul li {
-    color: #000000 !important;
-}
-
-.ad_setting_ul_li a {
-    color: #000000;
-    text-decoration: none;
-}
-
-.ad_setting_ul_li_a {
-    color: #fff !important;
-    text-decoration: none !important;
-}
-
 /*菜单*/
 .layout_left_menu {
     position: absolute;

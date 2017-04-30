@@ -7,6 +7,7 @@ import com.task.bean.Task;
 import com.task.bean.User;
 import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.ContentDetailResponse;
+import com.task.bean.response.ContentInfoResponse;
 import com.task.repository.ContentRepository;
 import com.task.repository.TaskRepository;
 import com.task.utils.TaskExportUtils;
@@ -42,6 +43,37 @@ public class ContentController {
     TaskRepository taskRepository;
     @Autowired
     ContentRepository contentRepository;
+
+    /**
+     * 获得用户对这个任务的状态,已通过,已驳回,未审核,已保存
+     *
+     * @return
+     */
+    @TokenValid
+    @GetMapping("/tasks/{id}/content/info")
+    public ResponseEntity getTaskContentInfo(@PathVariable int id, User user) {
+        Task task = taskRepository.findOne(id);
+        if (task == null) {
+            return ResponseEntity.notFound().build();
+        }
+        List<Content> contents = contentRepository.findByTaskAndUser(task, user);
+        boolean submit = false;
+        boolean verify = true;
+        if (contents.size() > 0) {
+            submit = true;
+            for (Content content : contents) {
+                if (content.getState() != 1) {//审核未通过
+                    verify = false;
+                }
+            }
+        } else {
+            verify = false;
+        }
+        ContentInfoResponse response = new ContentInfoResponse();
+        response.submit = submit;
+        response.verify = verify;
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * 获得当前用户 某个 task 提交的内容,可能有多条
