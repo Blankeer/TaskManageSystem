@@ -20,9 +20,14 @@ body {
 
 /*顶部div*/
 .layout_top_header {
-    background-color: #353636;
+    background-color: #252834;
     width: 100%;
     height: 50px;
+}
+
+.logout_div {
+    margin-left: 15px;
+    cursor: pointer;
 }
 
 .ad_setting_a {
@@ -107,20 +112,13 @@ body {
     position: absolute;
     float: left;
     min-height: 90%;
-    box-shadow: 0 0 10px #BDBDBD;
+    /*box-shadow: 0 0 10px #BDBDBD;*/
     width: 200px;
-    background: #f7f5fa;
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
-    padding-left: 5px;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
+    padding-top: 10px;
+    border-right: 1px solid #dfe6ed;
 }
 
 #menu {
-    padding: 10px;
     list-style: none;
     line-height: 35px;
     border-radius: 5px;
@@ -134,6 +132,8 @@ body {
 
 #menu li {
     color: #888;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .selected {
@@ -210,19 +210,13 @@ body {
 
 /*main内容显示*/
 .layout_right_content {
-    margin-top: 5px;
-    margin-right: 5px;
-    box-shadow: 0 0 10px #BDBDBD;
-    margin-left: 215px;
+    /*box-shadow: 0 0 10px #BDBDBD;*/
+    margin-left: 200px;
     padding-left: 10px;
-    padding-top: 5px;
-    height: 90%;
-    min-height: 90%;
+    height: 100%;
     overflow: auto;
-    border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
-    background: #f7f5fa;
 }
 
 .route_bg {

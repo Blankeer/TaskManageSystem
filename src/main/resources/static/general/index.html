@@ -1,16 +1,18 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>管理后台</title>
+    <title>表单管理系统后台</title>
 
 
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link type="text/css" href="../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/toastr.min.css"/>
     <link rel="stylesheet" href="css/index.css" type="text/css"/>
 
     <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/toastr.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.tools.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/tendina.min.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
 
 </head>
@@ -18,11 +20,13 @@
 <!--顶部-->
 <div class="layout_top_header">
     <div style="float: left">
-        <span style="font-size: 16px;line-height: 45px;padding-left: 20px;color: #8d8d8d">XXXX管理后台</h1></span>
+        <span style="font-size: 16px;line-height: 45px;padding-left: 20px;color: #fff">表单管理系统</h1></span>
     </div>
     <div style="margin-right:20px;color: #fff;height: 50px;line-height:50px;position: absolute;right: 0px;">
         <span id="username"></span>
-        <i class="fa fa-home fa-fw"></i>退出
+        <span class="logout_div" id="logout">
+            <i class="fa fa-home fa-fw"></i>退出
+        </span>
     </div>
 </div>
 <!--顶部结束-->

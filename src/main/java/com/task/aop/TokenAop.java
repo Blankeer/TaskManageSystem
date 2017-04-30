@@ -37,9 +37,7 @@ public class TokenAop {
         String token = request.getHeader(ProjectConfig.HEAD_TOKEN);
         User user = null;
         if (TextUtils.isEmpty(token)) {
-//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            // TODO: 2017/3/18 test user
-            user = userRepository.findOne(1);//test
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             user = userRepository.findByToken(token);
             if (null == user) {

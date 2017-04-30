@@ -105,6 +105,17 @@ public class UserController {
         }
     }
 
+    /**
+     * 根据 token 校验用户
+     *
+     * @return
+     */
+    @TokenValid
+    @GetMapping("/token/check")
+    public ResponseEntity checkToken(User user) {
+        return ResponseEntity.ok(UserLoginResponse.wrap(user));
+    }
+
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail());

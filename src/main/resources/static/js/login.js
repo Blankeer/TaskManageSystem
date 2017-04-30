@@ -30,7 +30,7 @@ function login() {
     var account = $('#login_account').val();
     var pwd = $('#login_password').val();
     if (!emailCheck(account)) {
-        alert("邮箱格式不正确");
+        $.msg_error("邮箱格式不正确");
         return;
     }
     var data = {
@@ -52,15 +52,15 @@ function register() {
     var pwd2 = $('#reg_password_agin').val();
     var cha = $("#reg_capcha").val();
     if (!emailCheck(account)) {
-        alert("邮箱格式不正确");
+        $.msg_error("邮箱格式不正确");
         return;
     }
     if (pwd != pwd2) {
-        alert("两次输入密码不一致");
+        $.msg_error("两次输入密码不一致");
         return;
     }
     if (!cha) {
-        alert("请输入验证码");
+        $.msg_error("请输入验证码");
         return;
     }
     var data = {
@@ -69,6 +69,7 @@ function register() {
         "captcha": cha
     };
     $.post("/register", data, function (data) {
+        $.msg_success("注册成功,请登录");
         $('.a_login').click();
     });
 }
@@ -78,15 +79,15 @@ function findPwd() {
     var pwd2 = $('#findpwd_password_agin').val();
     var cha = $("#findpwd_capcha").val();
     if (!emailCheck(account)) {
-        alert("邮箱格式不正确");
+        $.msg_error("邮箱格式不正确");
         return;
     }
     if (pwd != pwd2) {
-        alert("两次输入密码不一致");
+        $.msg_error("两次输入密码不一致");
         return;
     }
     if (!cha) {
-        alert("请输入验证码");
+        $.msg_error("请输入验证码");
         return;
     }
     var data = {
@@ -95,6 +96,7 @@ function findPwd() {
         "captcha": cha
     };
     $.post("/find-pwd", data, function (data) {
+        $.msg_success("密码重置成功,请重新登录");
         $('.a_login').click();
     });
 }
@@ -123,7 +125,7 @@ function regGetChpcha() {
 }
 function getChpcha(email, el) {
     if (!emailCheck(email)) {
-        alert("邮箱格式不正确");
+        $.msg_error("邮箱格式不正确");
         return;
     }
     el.attr("disabled", "true");

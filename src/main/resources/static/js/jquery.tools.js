@@ -11,17 +11,17 @@ $.ajaxx = function (method, url, data, succ, fail) {
             if (data.status == 401) {
                 location.href = '/login.html';
             } else if (data.status == 500) {
-                alert('服务器内部错误');
+                $.msg_error('服务器内部错误');
             } else if (data_json.message) {
-                alert(data_json.message);
+                $.msg_error(data_json.message);
             } else {
                 if (data.status == 400) {
-                    alert('输入错误')
+                    $.msg_error('输入错误')
                 } else {
-                    alert(data.responseText);
+                    $.msg_error(data.responseText);
                 }
             }
-            if(fail) {
+            if (fail) {
                 fail(data);
             }
         },
@@ -52,16 +52,41 @@ $.post = function (url, data, success, fail) {
 $.put = function (url, data, success, fail) {
     $.ajaxx('put', url, data, success, fail);
 };
-$.message = function (msg) {
-    $('#alert_message').text(msg);
-};
-
 $.saveToken = function (token) {
     localStorage.setItem("token", token)
 };
+
 $.getToken = function () {
     return localStorage.getItem('token');
 };
 $.clearToken = function () {
     localStorage.removeItem("token");
 };
+
+toastr.options = {
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": false,
+    "positionClass": "toast-top-center",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "300",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+};
+$.msg_waring = function (msg) {
+    toastr.warning(msg)
+};
+$.msg_success = function (msg) {
+    toastr.success(msg)
+};
+$.msg_error = function (msg) {
+    toastr.error(msg)
+};
+
