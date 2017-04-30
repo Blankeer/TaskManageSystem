@@ -1,4 +1,5 @@
 var size = 10;
+var key = '';
 $(document).ready(function () {
     $('#bu_task_add').click(function () {
         localStorage.removeItem('click_task_id');//新增
@@ -6,10 +7,15 @@ $(document).ready(function () {
     });
 
     initPagination();
+    $('#search_text').change(function () {
+        key = $(this).val();
+        initPagination();
+    })
 });
 //初始化分页
 function initPagination() {
-    getTask(0, size, function (data) {
+    $('#pagination').twbsPagination('destroy');
+    getTask(0, size, key, function (data) {
         $('#pagination').twbsPagination({
             totalPages: data.totalPages,
             visiblePages: 5,
@@ -19,7 +25,7 @@ function initPagination() {
             next: "下一页",
             hideOnlyOnePage: true,
             onPageClick: function (event, page) {
-                getTask(page - 1, size, function (data) {
+                getTask(page - 1, size, key, function (data) {
                     $('#table_body').empty();
                     for (var i in data.content) {
                         addTaskRowHtml(data.content[i]);
@@ -80,8 +86,8 @@ function getTaskViewId(task_id) {
     return "task_" + task_id
 }
 //上一页下一页 ajax,分页
-function getTask(page, size, callback) {
-    $.get('/tasks?page=' + page + "&size=" + size, callback);
+function getTask(page, size, key, callback) {
+    $.get('/tasks?page=' + page + "&size=" + size + "&key=" + key, callback);
 }
 function formatDate(time) {
     if (time == null) {
