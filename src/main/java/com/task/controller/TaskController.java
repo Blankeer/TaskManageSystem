@@ -260,7 +260,7 @@ public class TaskController {
         return ResponseEntity.ok().build();
     }
 
-    @AdminValid
+    @TokenValid
     @GetMapping("/tasks/{id}/fields")
     public ResponseEntity getTaskFields(@PathVariable int id) {
         // TODO: 17-1-27 验证
