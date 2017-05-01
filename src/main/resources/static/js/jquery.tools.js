@@ -7,6 +7,10 @@ $.ajaxx = function (method, url, data, succ, fail) {
         data: JSON.stringify(data),
         success: succ,
         error: function (data) {
+            if (typeof (fail) != "undefined") {
+                fail(data);
+                return;
+            }
             data_json = data.responseJSON;
             if (data.status == 401) {
                 location.href = '/login.html';
@@ -20,9 +24,6 @@ $.ajaxx = function (method, url, data, succ, fail) {
                 } else {
                     $.msg_error(data.responseText);
                 }
-            }
-            if (fail) {
-                fail(data);
             }
         },
         beforeSend: function (request) {
@@ -89,4 +90,18 @@ $.msg_success = function (msg) {
 $.msg_error = function (msg) {
     toastr.error(msg)
 };
-
+$.formatDate = function (time) {
+    if (time == null) {
+        return "不知道什么时间";
+    }
+    var date = new Date(time);
+    var Y = date.getFullYear() + '-';
+    var M = format0(date.getMonth() + 1) + '-';
+    var D = format0(date.getDate()) + ' ';
+    var h = format0(date.getHours()) + ':';
+    var m = format0(date.getMinutes());
+    return Y + M + D + h + m;
+};
+function format0(num) {
+    return num < 10 ? '0' + num : num + '';
+}

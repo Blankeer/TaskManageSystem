@@ -482,30 +482,48 @@ public class TaskController {
     /**
      * 添加收藏
      *
-     * @param request
      * @param user
      * @return
      */
     @TokenValid
-    @PostMapping("/tasks/likes")
-    public ResponseEntity addLikeTask(@RequestBody LikeTaskRequest request, User user) {
-        Task task = taskRepository.findOne(request.getTaskId());
+    @PostMapping("/tasks/{tid}/likes")
+    public ResponseEntity addLikeTask(@PathVariable int tid, User user) {
+        Task task = taskRepository.findOne(tid);
         if (task != null) {
             user.getLikeTasks().add(task);
             userRepository.save(user);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(new BaseMessageResponse("收藏成功"));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * 判断该 task 是否已经被收藏
+     *
+     * @param user
+     * @return
+     */
+    @TokenValid
+    @GetMapping("/tasks/{tid}/is-like")
+    public ResponseEntity isLikeTask(@PathVariable int tid, User user) {
+        Task task = taskRepository.findOne(tid);
+        if (task != null) {
+            boolean isList = user.getLikeTasks().contains(task);
+            if (isList) {
+                return ResponseEntity.ok(new BaseMessageResponse("已经收藏"));
+            }
         }
         return ResponseEntity.notFound().build();
     }
 
     @TokenValid
-    @DeleteMapping("/tasks/likes/")
-    public ResponseEntity deleteLikeTask(@RequestBody LikeTaskRequest request, User user) {
-        Task task = taskRepository.findOne(request.getTaskId());
+    @DeleteMapping("/tasks/{tid}/likes/")
+    public ResponseEntity deleteLikeTask(@PathVariable int tid, User user) {
+        Task task = taskRepository.findOne(tid);
         if (task != null) {
             user.getLikeTasks().remove(task);
             userRepository.save(user);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(new BaseMessageResponse("取消收藏成功"));
         }
         return ResponseEntity.notFound().build();
     }

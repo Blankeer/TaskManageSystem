@@ -16,23 +16,22 @@
 </head>
 <body>
 <button id="back" class="btn btn-primary">返回</button>
+<button id="is_like" class="btn btn-primary" style="margin-left: 15px;">收藏</button>
 <br>
 <fieldset disabled>
     <div class="attr_div">
-        <span class="attr_title">名称</span>
-        <input id="task_title" class="form-control input_text attr_value">
+        <span class="attr_title">名称 : </span>
+        <span id="task_title"></span>
     </div>
     <div class="attr_div">
-        <span class="attr_title">发布时间</span>
-        <input id="task_start_time" class="form-control input_text attr_value" type="datetime">
+        <span class="attr_title">发布时间 : </span>
+        <span id="task_start_time"></span>
+        <span class="attr_title" style="margin-left: 15px;">截止时间 : </span>
+        <span id="task_end_time"></span>
     </div>
     <div class="attr_div">
-        <span class="attr_title">截止时间</span>
-        <input id="task_end_time" class="form-control input_text attr_value" type="datetime">
-    </div>
-    <div class="attr_div">
-        <span class="attr_title">备注</span>
-        <input id="task_desc" class="form-control input_text attr_value" type="text">
+        <span class="attr_title">备注 : </span>
+        <span id="task_desc"></span>
     </div>
 </fieldset>
 <button id="add_content_row" class="btn btn-success"> 新增</button>

@@ -10,14 +10,36 @@ $(function () {
     if (task_id) {
         //获得任务详情
         $.get('/task/' + task_id, function (data) {
-            $('#task_title').val(data.title);
-            $('#task_desc').val(data.description);
-            $('#task_start_time').val(data.publishTime);
-            $('#task_end_time').val(data.deadlineTime);
+            $('#task_title').text(data.title);
+            $('#task_desc').text(data.description);
+            $('#task_start_time').text($.formatDate(data.publishTime));
+            $('#task_end_time').text($.formatDate(data.deadlineTime));
             loadContntData();
         });
-
+        //获得收藏状态
+        initLikeState();
     }
+    //初始化收藏状态
+    function initLikeState() {
+        $.get('/tasks/' + task_id + '/is-like', function () {
+            $('#is_like').text("取消收藏");
+            $('#is_like').unbind("click");
+            $('#is_like').click(function () {
+                $.delete('/tasks/' + task_id + '/likes/', function () {
+                    initLikeState();
+                });
+            });
+        }, function () {
+            $('#is_like').text("收藏");
+            $('#is_like').unbind("click");
+            $('#is_like').click(function () {//点击收藏
+                $.post('/tasks/' + task_id + '/likes/', null, function () {
+                    initLikeState();
+                });
+            });
+        });
+    }
+
     //ajax 获得用户提交的数据, 可能是进入页面调用,也可能是删除或提交内容之后调用
     function loadContntData() {
         //get task fields

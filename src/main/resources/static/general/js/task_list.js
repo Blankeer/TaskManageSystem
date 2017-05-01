@@ -75,8 +75,8 @@ function getTaskRowItem(data) {
     var task_pubtime = item_html.find(".task_pubtime");
     var task_endtime = item_html.find(".task_endtime");
     item_title.text(data.title);
-    task_pubtime.text(formatDate(data.publishTime));
-    task_endtime.text(formatDate(data.deadlineTime));
+    task_pubtime.text($.formatDate(data.publishTime));
+    task_endtime.text($.formatDate(data.deadlineTime));
     item_html.show();
     //跳转到任务详情
     item_html.click(function () {
@@ -93,15 +93,4 @@ function getTaskViewId(task_id) {
 function getTask(page, size, key, callback) {
     $.get('/tasks?page=' + page + "&size=" + size + "&key=" + key, callback);
 }
-function formatDate(time) {
-    if (time == null) {
-        return "不知道什么时间";
-    }
-    var date = new Date(time);
-    var Y = date.getFullYear() + '-';
-    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-    var D = date.getDate() + ' ';
-    var h = date.getHours() + ':';
-    var m = date.getMinutes();
-    return Y + M + D + h + m;
-}
+
