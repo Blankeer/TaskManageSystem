@@ -47,11 +47,11 @@ function getTaskRowItem(data) {
     task_pubtime.text(formatDate(data.publishTime));
     task_endtime.text(formatDate(data.deadlineTime));
     item_html.show();
-    // //跳转到任务详情
-    // item_html.click(function () {
-    //     localStorage.setItem('click_task_id', data.id);
-    //     $('#menuFrame', parent.document.body).attr('src', 'task_detail.html')
-    // });
+    //跳转到任务详情
+    item_html.click(function () {
+        localStorage.setItem('click_task_id', data.id);
+        $('#menuFrame', parent.document.body).attr('src', 'task_detail.html')
+    });
     return item_html
 }
 //获取 task 控件 id
