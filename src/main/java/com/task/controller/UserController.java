@@ -226,7 +226,7 @@ public class UserController {
         }
         user.setPwd(Md5Utils.md5(request.getNewPwd()));
         userRepository.save(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(new BaseMessageResponse("修改密码成功"));
     }
 
     @TokenValid
@@ -241,7 +241,7 @@ public class UserController {
         }
         user.setNickName(nickname);
         userRepository.save(user);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new BaseMessageResponse("修改昵称成功"));
     }
 
     @AdminValid
