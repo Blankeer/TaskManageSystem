@@ -1,13 +1,21 @@
-
-$(document).ready(function(){
-    $('#menu').tendina({
-        openCallback: function(clickedEl) {
-          console.log(clickedEl);
-        },
-        closeCallback: function(clickedEl) {
-          console.log(clickedEl);
+$(document).ready(function () {
+    $.get('/token/check', function (data) {
+        var name = data.nickName;
+        if (!name) {
+            name = data.email;
         }
+        if (!data.isAdmin) {
+            logout();
+        }
+        $('#username').text(name);
+    }, function () {
+        logout();
     });
-    $('#username').text('测试用户');
 
+    $('#logout').click(logout);
+
+    function logout() {
+        $.clearToken();
+        location.href = "/login.html";
+    }
 });
