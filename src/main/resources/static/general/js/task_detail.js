@@ -1,6 +1,7 @@
 /**
  * Created by blanke on 2017/4/4.
  */
+var task_expire = false;//任务是否失效,即超过了截止时间
 $(function () {
     $('#back').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
@@ -14,6 +15,11 @@ $(function () {
             $('#task_desc').text(data.description);
             $('#task_start_time').text($.formatDate(data.publishTime));
             $('#task_end_time').text($.formatDate(data.deadlineTime));
+            task_expire = new Date() > new Date(data.deadlineTime);
+            if (task_expire) {
+                $('#add_content_row').hide();//隐藏增加按钮
+                $.msg_waring("任务已经超过截止时间,只能查看数据")
+            }
             loadContntData();
         });
         //获得收藏状态
@@ -50,6 +56,10 @@ $(function () {
         //获得任务所有的字段
         $.get('/tasks/' + task_id + '/fields', function (data) {
             var data_fields = data;
+            if (data_fields.length == 0) {
+                $.msg_error("管理员还没有配置该任务");
+                return;
+            }
             //获得表单内容
             $.get('/tasks/' + task_id + '/contents', function (data) {
                 // data=data.content;TODO
@@ -143,10 +153,46 @@ $(function () {
         return content_html;
     }
 
+    //获得 tag 的 html
+    function getTagHtml() {
+        return $('<div class="label content_tag"></div>');
+    }
+
     // 每条 content 的 html
     function getContentRow(task_id, content, row_index) {
         row_html = $('#content_row_template').clone();
         row_html.attr('id', getContentRowId(row_index));
+        var content_state = row_html.find('.content_state');
+        var content_buttons = row_html.find('.content_buttons');
+        var content_fieldset = row_html.find('.content_fieldset');
+        if (content.isSubmit) {
+            var submit_tag = getTagHtml();
+            submit_tag.text('已提交');
+            submit_tag.addClass('label-info');
+            content_state.append(submit_tag);
+        } else if (content.id > 0) {//已经保存
+            var save_tag = getTagHtml();
+            save_tag.text('已保存');
+            save_tag.addClass('label-info');
+            content_state.append(save_tag);
+        }
+        if (task_expire) {//已经失效,隐藏操作按钮
+            content_buttons.hide();//隐藏所有的按钮
+            content_fieldset.attr('disabled', 'true');
+        }
+        if (content.state == 1) {
+            var succ_tag = getTagHtml();
+            succ_tag.text('审核通过');
+            succ_tag.addClass('label-success');
+            content_state.append(succ_tag);
+            content_buttons.hide();//隐藏所有的按钮
+            content_fieldset.attr('disabled', 'true');// 输入框禁止输入
+        } else if (content.state == -1) {
+            var fail_tag = getTagHtml();
+            fail_tag.text('审核被驳回');
+            fail_tag.addClass('label-danger');
+            content_state.append(fail_tag);
+        }
         row_html.find('.content_row_save').text(content.id > 0);
         row_html.find('.content_row_submit').text(content.isSubmit);
         row_html.find('.content_row_verify').text(content.state);
@@ -182,13 +228,25 @@ $(function () {
                 var url = '/tasks/' + task_id + '/contents/';
                 if (content.id > 0) {//update
                     $.put(url + content.id, data, function (res) {
+                        if (data['submit']) {
+                            $.msg_success("提交成功");
+                        } else {
+                            $.msg_success("保存成功");
+                        }
                         loadContntData();
                     });
                 } else {
                     $.post(url, data, function (res) {
+                        if (data['submit']) {
+                            $.msg_success("提交成功");
+                        } else {
+                            $.msg_success("保存成功");
+                        }
                         loadContntData();
                     });
                 }
+            } else {
+                $.msg_error("请按照规则正确填写内容!");
             }
         };
         bu_save.click(saveSubmitListener);
@@ -200,6 +258,7 @@ $(function () {
                     return;
                 }
                 $.delete('/tasks/' + task_id + '/contents/' + content.id, function () {
+                    $.msg_success("删除成功");
                     loadContntData();
                 });
             } else {

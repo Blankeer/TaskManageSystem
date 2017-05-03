@@ -16,7 +16,7 @@
 </head>
 <body>
 <button id="back" class="btn btn-primary">返回</button>
-<button id="is_like" class="btn btn-primary" style="margin-left: 15px;">收藏</button>
+<button id="is_like" class="btn btn-primary" style="float: right">收藏</button>
 <br>
 <fieldset disabled>
     <div class="attr_div">
@@ -34,33 +34,39 @@
         <span id="task_desc"></span>
     </div>
 </fieldset>
-<button id="add_content_row" class="btn btn-success"> 新增</button>
+<button id="add_content_row" class="btn btn-success">新增内容</button>
 <div id="field_div">
 
 </div>
 <div id="contents_div">
 
 </div>
-<div id="content_row_template" style="margin: 10px;padding:10px;text-align: center;">
-    已保存:<span class="content_row_save">false</span>
-    已提交:<span class="content_row_submit">false</span>
-    已审核:<span class="content_row_verify">false</span>
-    <div class="div_content">
-        <div style="width: auto;display: inline-block;margin: 5px" class="content_item">
-            <div class="div_content_field" data-toggle="tooltip" style="margin: 5px;">
-                字段名称
-            </div>
-            <div class="div_content_value" style="margin: 5px;">
-                <input class="form-control input_text attr_value content_value" data-toggle="tooltip" type="text">
-            </div>
-        </div>
-    </div>
-    <div>
-        <button class="btn btn-primary content_save">保存</button>
-        <button class="btn btn-primary content_submit">提交</button>
-        <button class="btn btn-primary btn-danger content_delete">删除</button>
+
+<div id="content_row_template" class="content_row">
+    <div class="content_state"></div>
+    <div style="display: none">
+        已保存:<span class="content_row_save">false</span>
+        已提交:<span class="content_row_submit">false</span>
+        已审核:<span class="content_row_verify">false</span>
     </div>
 
+    <fieldset class="content_fieldset">
+        <div class="div_content">
+            <div style="width: auto;display: inline-block;margin: 5px" class="content_item">
+                <div class="div_content_field" data-toggle="tooltip" style="margin: 5px;">
+                    字段名称
+                </div>
+                <div class="div_content_value" style="margin: 5px;">
+                    <input class="form-control input_text attr_value content_value" data-toggle="tooltip" type="text">
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="content_buttons">
+        <button class="btn btn-primary content_save content_bu">保存</button>
+        <button class="btn btn-primary content_submit content_bu">提交</button>
+        <button class="btn btn-primary btn-danger content_delete content_bu">删除</button>
+    </div>
 </div>
 </body>
 </html>
