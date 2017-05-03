@@ -5,25 +5,31 @@
 
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/task_list.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="../css/toastr.min.css"/>
+    <link rel="stylesheet" href="css/users_list.css" type="text/css"/>
 
     <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/toastr.min.js"></script>
     <script type="text/javascript" src="../js/jquery.tools.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/jquery.twbsPagination.min.js"></script>
     <script type="text/javascript" src="js/users_list.js"></script>
 </head>
 <body>
-<table id="table_users_list">
+<table id="table_users_list" class="table">
     <thead>
     <tr>
-        <th>名称</th>
+        <th>昵称</th>
+        <th>邮箱</th>
     </tr>
     </thead>
     <tbody id="table_body">
 
     </tbody>
-
+    <tr id="user_item_template" style="display: none;">
+        <td class="user_name"></td>
+        <td class="user_email"></td>
+    </tr>
     <ul id="pagination" class="pagination-sm"></ul>
 </table>
 
