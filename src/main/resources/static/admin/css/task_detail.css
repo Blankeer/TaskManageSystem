@@ -1,19 +1,52 @@
 body {
     padding: 10px;
 }
+
 #back {
-    margin: 10px;
 }
+
 .attr_div {
-    margin: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
+
 .attr_title {
 
 }
-.attr_value{
-    width: auto;
-    min-width: 100px;
-    max-width: 300px;
+
+.attr_value {
+    width: 70px;
+    max-width: 120px;
     margin-left: 10px;
     display: inline-block;
+}
+
+.content_row {
+    margin: 15px 8px;
+    padding: 10px;
+    border: 2px solid #dfe6ed;
+    border-radius: 3px;
+}
+
+.content_item {
+    text-align: center;
+}
+
+.content_input {
+    width: 100px;
+}
+
+.content_bu {
+    margin: 5px;
+}
+
+.content_tag {
+    margin: 5px;
+}
+
+.input_text {
+    width: 300px;
+}
+.content_state {
+    margin: 5px;
 }

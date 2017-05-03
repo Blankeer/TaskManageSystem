@@ -3,53 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>任务详情</title>
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/toastr.min.css"/>
     <link rel="stylesheet" href="css/task_detail.css" type="text/css"/>
 
     <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/toastr.min.js"></script>
     <script type="text/javascript" src="../js/jquery.tools.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/task_detail.js"></script>
 </head>
 <body>
 <button id="back" class="btn btn-primary">返回</button>
-<button id="update" class="btn btn-primary">修改</button>
-<button id="delete" class="btn btn-primary">删除</button>
+<button id="update" class="btn btn-success">修改</button>
+<button id="delete" class="btn btn-danger">删除</button>
+<button id="is_like" class="btn btn-primary" style="float: right">收藏</button>
 <br>
 <fieldset disabled>
     <div class="attr_div">
-        <span class="attr_title">名称</span>
-        <input id="task_title" class="form-control input_text attr_value">
+        <span class="attr_title">名称 : </span>
+        <span id="task_title"></span>
     </div>
     <div class="attr_div">
-        <span class="attr_title">发布时间</span>
-        <input id="task_start_time" class="form-control input_text attr_value" type="datetime">
+        <span class="attr_title">发布时间 : </span>
+        <span id="task_start_time"></span>
+        <span class="attr_title" style="margin-left: 15px;">截止时间 : </span>
+        <span id="task_end_time"></span>
     </div>
     <div class="attr_div">
-        <span class="attr_title">截止时间</span>
-        <input id="task_end_time" class="form-control input_text attr_value" type="datetime">
-    </div>
-    <div class="attr_div">
-        <span class="attr_title">备注</span>
-        <input id="task_desc" class="form-control input_text attr_value" type="text">
+        <span class="attr_title">备注 : </span>
+        <span id="task_desc"></span>
     </div>
 </fieldset>
 <div>
-    任务总人数:<span id="user_count"></span>
-    提交内容数:<span id="content_count"></span>
-    未审核数:<span id="wait_content_count"></span>
-    已通过数:<span id="pass_content_count"></span>
+    任务总人数 : <span id="user_count"></span>
+    提交内容数 : <span id="content_count"></span>
+    未审核数 : <span id="wait_content_count"></span>
+    已通过数 : <span id="pass_content_count"></span>
 
 </div>
-<button id="export_data" class="btn btn-primary">导出数据</button>
+<button id="export_data" class="btn btn-primary" style="margin-top: 15px;">
+    导出数据
+</button>
 
 <div id="contents_div">
 
 </div>
 
-<div id="content_row_template" style="display:none;margin: 10px;padding:10px;text-align: center;">
-    提交人:<span class="div_user"></span>  提交时间:<span class="div_time"></span><br/>
+<div id="content_row_template" class="content_row">
+    <div class="content_state"></div>
+    提交人 : <span class="div_user"></span> </br>提交时间 : <span class="div_time"></span><br/>
     <div class="div_content" style="display: inline-block;">
         <div style="width: auto;display: inline-block;margin: 5px" class="content_item">
             <div class="div_content_field" data-toggle="tooltip" style="margin: 5px;">
@@ -60,9 +64,9 @@
             </div>
         </div>
     </div>
-    <div style="display: inline-block;" id="verify_bus">
-        <button class="btn btn-primary content_pass">通过</button>
-        <button class="btn btn-primary content_dismiss">驳回</button>
+    <div class="verify_bus">
+        <button class="btn btn-success content_pass">通过</button>
+        <button class="btn btn-danger content_dismiss">驳回</button>
     </div>
 
 </div>
