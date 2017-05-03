@@ -1,0 +1,30 @@
+.input_text {
+    width: 500px;
+}
+
+.attr_div {
+    margin: 5px;
+}
+
+.task_op_bu {
+    margin: 5px;
+}
+
+.div_field_template {
+    min-width: 300px;
+    max-width: 700px;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #dfe6ed;
+    border-radius: 3px;
+}
+
+.dialog_user_item_template {
+    padding: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.user_name {
+    margin-left: 5px;
+}

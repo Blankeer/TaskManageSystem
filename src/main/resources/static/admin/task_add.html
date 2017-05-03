@@ -5,11 +5,16 @@
     <title>任务详情</title>
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/task_detail.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="../css/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" href="css/task_add.css" type="text/css"/>
 
     <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/toastr.min.js"></script>
     <script type="text/javascript" src="../js/jquery.tools.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
     <script type="text/javascript" src="../js/jquery.twbsPagination.min.js"></script>
     <script type="text/javascript" src="js/task_add.js"></script>
 </head>
@@ -28,26 +33,27 @@
     <input id="task_desc" class="form-control input_text attr_value" type="text">
 </div>
 <div class="attr_div">
-    <span class="attr_title">开始时间</span>
+    <span class="attr_title">发布时间</span>
     <input id="task_start_time" class="form-control input_text attr_value" type="datetime">
+
 </div>
 <div class="attr_div">
-    <span class="attr_title">结束时间</span>
+    <span class="attr_title">截止时间</span>
     <input id="task_end_time" class="form-control input_text attr_value" type="datetime">
 </div>
 
-<button id="bu_add_field" class="btn btn-primary" data-toggle="modal"
+<button id="bu_add_field" class="btn btn-primary task_op_bu" data-toggle="modal"
         data-target="#addFieldDialog" data-backdrop="false">添加字段
 </button>
-<button id="bu_add_user" class="btn btn-primary" data-toggle="modal"
+<button id="bu_add_user" class="btn btn-primary task_op_bu" data-toggle="modal"
         data-target="#addUserDialog" data-backdrop="false">添加用户
 </button>
 已添加<span id="span_user_count">0</span>个用户
-<div id="div_field_template" style="display: none;">
+<div id="div_field_template" style="display: none;" class="div_field_template">
     <span class="field_title"></span>
     <span class="field_config_name"></span>
-    <button class="btn btn-primary field_update">修改</button>
-    <button class="btn btn-primary field_delete">删除</button>
+    <button class="btn btn-success field_update task_op_bu">修改</button>
+    <button class="btn btn-danger field_delete task_op_bu">删除</button>
 </div>
 <div id="div_fields">
 
@@ -143,7 +149,7 @@
                     添加用户
                 </h4>
             </div>
-            <div id="dialog_user_item_template" style="display: none;">
+            <div id="dialog_user_item_template" style="display: none;" class="dialog_user_item_template">
                 <label>
                     <input type="checkbox" class="user_checkbox">
                     <span class="user_name"></span>
@@ -166,6 +172,6 @@
     </div><!-- /.modal -->
 </div>
 
-<button id="save" class="btn btn-primary">保存</button>
+<button id="save" class="btn btn-primary task_op_bu">保存</button>
 </body>
 </html>

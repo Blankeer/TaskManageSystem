@@ -10,6 +10,15 @@ $(function () {
     $('#back').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
     });
+    var datetimeOptions = {
+        format: 'yyyy-mm-dd hh:ii',
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        language: 'zh-CN'
+    };
+    $('#task_start_time').datetimepicker(datetimeOptions);
+    $('#task_end_time').datetimepicker(datetimeOptions);
     var task_id = localStorage.getItem('click_task_id');
     if (task_id) {//修改任务
         $('#bu_add_template').hide();//隐藏从模板添加按钮
@@ -64,7 +73,7 @@ $(function () {
 
     //解析 ajax ,返回每行数据
     function getTaskRowItem(data) {
-        var item_html = $("<div></div>");
+        var item_html = $("<div style='cursor: pointer'></div>");
         item_html.text(data.title);
         item_html.click(function () {
             template_task_id = data.id;
@@ -91,8 +100,8 @@ $(function () {
             $.get('/task/' + tid, function (data) {
                 $('#task_title').val(data.title);
                 $('#task_desc').val(data.description);
-                $('#task_start_time').val(data.publishTime);
-                $('#task_end_time').val(data.deadlineTime);
+                $('#task_start_time').val($.formatDate(data.publishTime));
+                $('#task_end_time').val($.formatDate(data.deadlineTime));
                 //获得任务所有的字段
                 $.get('/tasks/' + tid + '/fields', function (data) {
                     // if (data.length > 0) {
@@ -270,8 +279,8 @@ $(function () {
     $('#save').click(function () {
         var task_title = $('#task_title').val();
         var task_desc = $('#task_desc').val();
-        var task_start_time = $('#task_start_time').val();
-        var task_end_time = $('#task_end_time').val();
+        var task_start_time = new Date($('#task_start_time').val());
+        var task_end_time = new Date($('#task_end_time').val());
         var fields = $('#div_fields div');
         var data_json = {
             'title': task_title,
@@ -296,12 +305,12 @@ $(function () {
         // console.log(JSON.stringify(data_json));
         if (task_id == null) {
             $.post('/tasks', data_json, function (data) {
-                alert('添加成功');
+                $.msg_success('添加成功');
                 $('#back').click();
             });
         } else {
             $.put('/tasks/' + task_id, data_json, function (data) {
-                alert('添加成功');
+                $.msg_success('修改成功');
                 $('#back').click();
             });
         }
