@@ -5,9 +5,11 @@
 
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/task_list.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="../css/toastr.min.css"/>
+    <link rel="stylesheet" href="css/config_list.css" type="text/css"/>
 
     <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/toastr.min.js"></script>
     <script type="text/javascript" src="../js/jquery.tools.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/jquery.twbsPagination.min.js"></script>
@@ -15,17 +17,22 @@
 </head>
 <body>
 <button id="bu_config_add" class="btn btn-primary" data-toggle="modal"
-        data-target="#addConfigDialog" data-backdrop="false">新增规则</button>
-<table id="table_config_list">
+        data-target="#addConfigDialog" data-backdrop="false">新增规则
+</button>
+<table id="table_config_list" class="table">
     <thead>
     <tr>
         <th>名称</th>
+        <th>描述</th>
     </tr>
     </thead>
     <tbody id="table_body">
 
     </tbody>
-
+    <tr id="config_item_template" style="display: none;">
+        <td class="config_name"></td>
+        <td class="config_desc"></td>
+    </tr>
     <ul id="pagination" class="pagination-sm"></ul>
 </table>
 

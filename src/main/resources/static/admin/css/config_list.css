@@ -1,0 +1,18 @@
+#table_config_list {
+    width: 500px;
+}
+
+th {
+    text-align: center;
+}
+
+tr {
+    background-color: rgba(0, 0, 0, 0);
+    text-align: center;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+tr:hover {
+    background-color: #eee;
+}
