@@ -13,16 +13,10 @@
     <script type="text/javascript" src="../js/jquery.tools.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/jquery.twbsPagination.min.js"></script>
-    <script type="text/javascript" src="js/task_list.js"></script>
+    <script type="text/javascript" src="js/task_like.js"></script>
 </head>
 <body>
-<div style="float: left; margin-bottom: 5px;">
-    <button id="bu_task_add" class="btn btn-success">新增任务</button>
-    <button id="my_like" class="btn btn-primary">我的收藏</button>
-</div>
-<div style="float: right; margin-bottom: 5px;">
-    <input type="text" class="form-control input_text" id="search_text" placeholder="输入搜索关键字">
-</div>
+<button id="back" class="btn btn-primary" style="margin-bottom: 5px;">返回</button>
 <table id="table_task_list" class="table">
     <thead>
     <tr>
@@ -38,6 +32,7 @@
         <td class="task_title"></td>
         <td class="task_pubtime"></td>
         <td class="task_endtime"></td>
+        <td class="task_state"></td>
     </tr>
     <ul id="pagination" class="pagination-sm"></ul>
 
