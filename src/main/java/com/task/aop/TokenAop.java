@@ -33,18 +33,18 @@ public class TokenAop {
 
     @Around(value = "tokenPointCut()")
     public Object addTokenToMethod(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object[] args = joinPoint.getArgs();
-        String token = request.getHeader(ProjectConfig.HEAD_TOKEN);
+        Object[] args = joinPoint.getArgs();//被调用函数参数
+        String token = request.getHeader(ProjectConfig.HEAD_TOKEN);//获取header中的token
         User user = null;
         if (TextUtils.isEmpty(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);//返回401，即没有授权
         } else {
-            user = userRepository.findByToken(token);
+            user = userRepository.findByToken(token);//根据token在数据库中找对应用户
             if (null == user) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);//用户找不到
             }
         }
-        injectUserObject(user, args, token);//注射参数user
+        injectUserObject(user, args, token);//注射参数user给args中的user参数
         return joinPoint.proceed(args);
     }
 

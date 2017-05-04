@@ -245,7 +245,7 @@ public class TaskController {
             field.setTask(task);
             fieldRepository.save(field);
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new BaseMessageResponse("修改成功"));
     }
 
     @AdminValid
