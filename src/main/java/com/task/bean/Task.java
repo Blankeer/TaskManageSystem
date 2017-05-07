@@ -30,7 +30,7 @@ public class Task {
     private Set<User> users;
     //收藏这个任务的人
     @JsonIgnore
-    @ManyToMany(mappedBy = "likeTasks", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "likeTasks", fetch = FetchType.LAZY)
     private Set<User> likeUsers;
 
     public Task() {
