@@ -256,7 +256,7 @@ public class TaskController {
         if (task == null) {
             return ResponseEntity.notFound().build();
         }
-        taskRepository.delete(id);
+        taskRepository.delete(task);
         return ResponseEntity.ok().build();
     }
 
