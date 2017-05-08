@@ -2,6 +2,7 @@ var InterValObj; //timer变量，控制时间
 var count = 60; //间隔函数，1秒执行
 var curCount;//当前剩余秒数
 $(document).ready(function () {
+    //下面的点击事件都是切换界面的,登录/注册/找回密码,主要是用的 Jq 的 show/hide 方法
     $('.a_login').click(function () {
         $(".register-form").hide("fast");
         $(".login-form").show("fast");
@@ -20,12 +21,14 @@ $(document).ready(function () {
         $(".forget-form").show("fast");
         $(".forget-form-2").hide("fast");
     });
+    //具体点击登录,点击注册按钮的逻辑
     $('#bu_login').click(login);
     $('#findpwd_submit').click(findPwd);
     $('#bu_register').click(register);
     $('#findpwd_get_capcha').click(findPwdGetChpcha);
     $('#reg_get_capcha').click(regGetChpcha);
 });
+//点击登录按钮之后
 function login() {
     var account = $('#login_account').val();
     var pwd = $('#login_password').val();
@@ -33,19 +36,20 @@ function login() {
         $.msg_error("邮箱格式不正确");
         return;
     }
-    var data = {
+    var data = {//把 email 和 pwd, 组成 js 的对象,最终会转换成 json
         "email": account,
         "pwd": pwd
     };
     $.post("/login/", data, function (data) {
-        $.saveToken(data.token);//保存 token
-        var url = "/general/index.html";
+        $.saveToken(data.token);// 登录成功,保存 token
+        var url = "/general/index.html";//跳转到管理员或普通用户页面
         if (data.isAdmin) {
             url = "/admin/index.html";
         }
         location.href = url;
     });
 }
+//点击注册按钮的逻辑
 function register() {
     var account = $('#reg_account').val();
     var pwd = $('#reg_password').val();
@@ -70,7 +74,7 @@ function register() {
     };
     $.post("/register", data, function (data) {
         $.msg_success("注册成功,请登录");
-        $('.a_login').click();
+        $('.a_login').click();//注册成功,切换到登录页面
     });
 }
 function findPwd() {
@@ -131,12 +135,12 @@ function getChpcha(email, el) {
     el.attr("disabled", "true");
     $.get('/captcha?account=' + email, function () {
         captchaCountDown(el, "获得验证码");
-    },function () {
+    }, function () {
         el.removeAttr("disabled");//启用按钮
     });
 }
 function emailCheck(email) {
-    var emailPat = /^(.+)@(.+)$/;
+    var emailPat = /^(.+)@(.+)$/;//正则表达式,粗略判断邮箱中有没有@
     var matchArray = email.match(emailPat);
     return matchArray != null
 }

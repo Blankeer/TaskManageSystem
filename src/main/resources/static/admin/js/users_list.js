@@ -11,26 +11,27 @@ $(document).ready(function () {
                 $('#dialog_user_email').val(data.email);
                 $('#dialog_user_nickname').val(data.nickName);
             });
-            //更新
-            $('#dialog_user_submit').click(function () {
-                var data = {
-                    'email': $('#dialog_user_email').val(),
-                    'nickName': $('#dialog_user_nickname').val(),
-                };
-                $.put('/users/' + click_user_id, data, function () {
-                    $.msg_success("修改成功");
-                    reLoad();
-                });
-            });
-            //删除
-            $('#user_delete').click(function () {
-                $.delete('/users/' + click_user_id, function () {
-                    $.msg_success("删除成功");
-                    reLoad();
-                })
-            })
         }
     });
+    //弹出框  更新或删除用户
+    //更新
+    $('#dialog_user_submit').click(function () {
+        var data = {
+            'email': $('#dialog_user_email').val(),
+            'nickName': $('#dialog_user_nickname').val(),
+        };
+        $.put('/users/' + click_user_id, data, function () {
+            $.msg_success("修改成功");
+            reLoad();
+        });
+    });
+    //删除
+    $('#user_delete').click(function () {
+        $.delete('/users/' + click_user_id, function () {
+            $.msg_success("删除成功");
+            reLoad();
+        })
+    })
 });
 //重新加载该页面
 function reLoad() {

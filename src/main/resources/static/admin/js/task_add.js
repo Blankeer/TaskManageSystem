@@ -59,10 +59,6 @@ $(function () {
                     });
                 }
             });
-            $('#table_task_template').empty();
-            for (var i in data.content) {
-                addTaskRowHtml(data.content[i]);
-            }
         });
     }
 
@@ -235,15 +231,12 @@ $(function () {
                     });
                 }
             });
-            for (var i in data.content) {
-                addUserRowHtml(data.content[i]);
-            }
         });
-        // 选择用户,点击确定
-        $('#dialog_submit_submit').click(function () {
-            $('#addUserDialog').modal('hide');
-            $('#span_user_count').text(select_users.size);
-        });
+    });
+    // 选择用户,点击确定
+    $('#dialog_submit_submit').click(function () {
+        $('#addUserDialog').modal('hide');
+        $('#span_user_count').text(select_users.size);
     });
     //ajax 获得用户列表
     function getUsers(page, size, callback) {
