@@ -70,6 +70,6 @@ public class ConfigController {
         config.setDescription(request.description);
         config.setExpression(request.expression);
         configRepository.save(config);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("修改成功");
     }
 }

@@ -135,7 +135,7 @@ public class ContentController {
         }
         content.setState(pass ? 1 : -1);
         contentRepository.save(content);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("审核完成");
     }
 
     @AdminValid
