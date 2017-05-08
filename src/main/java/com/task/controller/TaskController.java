@@ -257,7 +257,7 @@ public class TaskController {
             return ResponseEntity.notFound().build();
         }
         taskRepository.delete(task);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new BaseMessageResponse("删除成功"));
     }
 
     @TokenValid

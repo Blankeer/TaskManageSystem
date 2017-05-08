@@ -26,7 +26,7 @@ $(function () {
             task_expire = new Date() > new Date(data.deadlineTime);
             if (task_expire) {
                 $('#update').hide();
-                $('#delete').hide();//隐藏修改 删除按钮
+                // $('#delete').hide();//隐藏修改 删除按钮
                 $.msg_waring("任务已经超过截止时间,只能查看数据")
             }
             //导出数据
@@ -54,6 +54,7 @@ $(function () {
             $('#is_like').click(function () {//点击收藏
                 $.post('/tasks/' + task_id + '/likes/', null, function () {
                     initLikeState();
+                    $.msg_success("收藏成功");
                 });
             });
         });
