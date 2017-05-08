@@ -2,6 +2,8 @@ package com.task.controller;
 
 import com.task.annotation.AdminValid;
 import com.task.annotation.TokenValid;
+import com.task.bean.Content;
+import com.task.bean.Task;
 import com.task.bean.User;
 import com.task.bean.request.ChangePwdRequest;
 import com.task.bean.request.LoginRequest;
@@ -292,7 +294,15 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-
+        //需要删掉用户的关联,主要是contents和tasks,这两个关联表不由 user 维护,所以要手动删除
+        //likeTasks的关联表由 user 维护所以会自动删掉
+        for (Task task : user.getTasks()) {
+            task.getUsers().remove(user);
+        }
+        //删掉用户提交的数据
+        for (Content content : user.getContents()) {
+            contentRepository.delete(content);
+        }
         userRepository.delete(user);
         return ResponseEntity.noContent().build();
     }
