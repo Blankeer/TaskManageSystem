@@ -12,6 +12,12 @@ $(function () {
     $('#update').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_add.html')
     });
+    //点击一键提醒
+    $('#notify').click(function () {
+        $.get('/tasks/' + task_id + '/notify', function () {
+            $.msg_success("一键提醒成功");
+        });
+    });
     if (task_id) {
         //获得任务详情
         $.get('/task/' + task_id, function (data) {
@@ -26,6 +32,7 @@ $(function () {
             task_expire = new Date() > new Date(data.deadlineTime);
             if (task_expire) {
                 $('#update').hide();
+                $('#notify').hide();
                 // $('#delete').hide();//隐藏修改 删除按钮
                 $.msg_waring("任务已经超过截止时间,只能查看数据")
             }

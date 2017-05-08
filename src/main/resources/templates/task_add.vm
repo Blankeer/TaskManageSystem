@@ -1,0 +1,12 @@
+<html>
+<body>
+<h3>${email} :</h3>
+<p>
+    ${nickName} 你好!
+</p>
+<p>
+    你有新的表单任务,(${taskName}),截止时间:${endTime}
+    请尽快提交表单数据.
+</p>
+</body>
+</html>

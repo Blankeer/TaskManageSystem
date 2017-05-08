@@ -8,6 +8,7 @@ import com.task.bean.User;
 import com.task.bean.response.BaseMessageResponse;
 import com.task.bean.response.ContentDetailResponse;
 import com.task.bean.response.ContentInfoResponse;
+import com.task.mail.MailUtils;
 import com.task.repository.ContentRepository;
 import com.task.repository.TaskRepository;
 import com.task.utils.TaskExportUtils;
@@ -43,6 +44,8 @@ public class ContentController {
     TaskRepository taskRepository;
     @Autowired
     ContentRepository contentRepository;
+    @Autowired
+    MailUtils mailUtils;
 
     /**
      * 获得用户对这个任务的状态,已通过,已驳回,未审核,已保存
@@ -135,6 +138,8 @@ public class ContentController {
         }
         content.setState(pass ? 1 : -1);
         contentRepository.save(content);
+        //发邮件提醒用户
+        mailUtils.sendTaskVerifyEmail(content.getTask(), content.getUser(), pass);
         return ResponseEntity.ok("审核完成");
     }
 

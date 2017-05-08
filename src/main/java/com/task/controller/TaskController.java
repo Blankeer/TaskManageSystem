@@ -5,6 +5,7 @@ import com.task.annotation.TokenValid;
 import com.task.bean.*;
 import com.task.bean.request.*;
 import com.task.bean.response.*;
+import com.task.mail.MailUtils;
 import com.task.repository.*;
 import com.task.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class TaskController {
     FieldRepository fieldRepository;
     @Autowired
     ConfigRepository configRepository;
+    @Autowired
+    MailUtils mailUtils;
 
     @TokenValid
     @GetMapping("/tasks")
@@ -160,6 +163,15 @@ public class TaskController {
             field.setTask(task);
             fieldRepository.save(field);
         }
+        //开启一个线程发送表单添加提醒邮件,之所以新开线程,因为很耗时
+        new Thread() {
+            @Override
+            public void run() {
+                for (User user : users) {
+                    mailUtils.sendTaskAddEmail(task, user);
+                }
+            }
+        }.start();
         return ResponseEntity.ok(new BaseMessageResponse("新建表单成功"));
     }
 
@@ -523,6 +535,44 @@ public class TaskController {
         if (task != null) {
             user.getLikeTasks().remove(task);
             userRepository.save(user);
+            return ResponseEntity.ok(new BaseMessageResponse("取消收藏成功"));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * 管理员点击一键提醒未提交或驳回的用户,发送提醒邮件
+     *
+     * @param tid
+     * @return
+     */
+    @AdminValid
+    @GetMapping("/tasks/{tid}/notify")
+    public ResponseEntity notifyTaskEmail(@PathVariable int tid) {
+        Task task = taskRepository.findOne(tid);
+        if (task != null) {
+            List<User> notifyUsers = new ArrayList<>();
+            for (User user : task.getUsers()) {
+                List<Content> contents = contentRepository.findByTaskAndUser(task, user);
+                if (contents != null && contents.size() > 0) {
+                    for (Content content : contents) {
+                        if (content.getState() != 1) {//提交的所有内容,只要遇到不是审核通过的就要提醒
+                            notifyUsers.add(user);
+                        }
+                    }
+                } else {
+                    notifyUsers.add(user);
+                }
+            }
+            //开启一个线程发送表单添加提醒邮件,之所以新开线程,因为很耗时
+            new Thread() {
+                @Override
+                public void run() {
+                    for (User user : notifyUsers) {
+                        mailUtils.sendTaskNotifyEmail(task, user);
+                    }
+                }
+            }.start();
             return ResponseEntity.ok(new BaseMessageResponse("取消收藏成功"));
         }
         return ResponseEntity.notFound().build();
