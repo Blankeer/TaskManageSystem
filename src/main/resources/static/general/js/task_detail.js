@@ -64,7 +64,7 @@ $(function () {
             }
             //获得表单内容
             $.get('/tasks/' + task_id + '/contents', function (data) {
-                // data=data.content;TODO
+                // data=data.content;
                 row_count = data.length;
                 for (var i in data) {
                     content_row = data[i];
