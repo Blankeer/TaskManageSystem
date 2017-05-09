@@ -51,7 +51,8 @@ public class TaskController {
         if (user.isAdmin()) {//管理员显示所有
             tasks = taskRepository.findByTitleContaining(pageable, key);
         } else {
-            tasks = taskRepository.findByUsersAndTitleContaining(pageable, user, key);
+            tasks = taskRepository.findByUsersAndTitleContainingAndPublishTimeGreaterThanEqual
+                    (pageable, user, key, new Date());
         }
         return ResponseEntity.ok(tasks.map(new Converter<Task, TaskListResponse>() {
             @Override
