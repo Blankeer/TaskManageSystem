@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
+ * 规则配置相关 API
  * Created by blanke on 17-1-27.
  */
 @RestController
@@ -18,6 +19,12 @@ public class ConfigController {
     @Autowired
     ConfigRepository configRepository;
 
+    /**
+     * 新增规则
+     *
+     * @param config
+     * @return
+     */
     @AdminValid
     @PostMapping("/configs")
     public ResponseEntity addConfig(@RequestBody Config config) {
@@ -25,6 +32,12 @@ public class ConfigController {
         return ResponseEntity.ok(config);
     }
 
+    /**
+     * 删除规则
+     *
+     * @param id
+     * @return
+     */
     @AdminValid
     @DeleteMapping("/configs/{id}")
     public ResponseEntity deleteConfig(@PathVariable("id") int id) {
@@ -33,9 +46,17 @@ public class ConfigController {
             return ResponseEntity.notFound().build();
         }
         configRepository.delete(config);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();//204成功删除
     }
 
+    /**
+     * 获得所有规则
+     *
+     * @param page
+     * @param size
+     * @param key
+     * @return
+     */
     @AdminValid
     @GetMapping("/configs")
     public ResponseEntity getAllConfig(@RequestParam(value = "page", defaultValue = "0")
@@ -48,6 +69,12 @@ public class ConfigController {
         return ResponseEntity.ok(configRepository.findByNameContaining(pageable, key));
     }
 
+    /**
+     * 获得某个规则的详情
+     *
+     * @param cid
+     * @return
+     */
     @AdminValid
     @GetMapping("/configs/{cid}")
     public ResponseEntity getConfigDetail(@PathVariable int cid) {
@@ -58,6 +85,13 @@ public class ConfigController {
         return ResponseEntity.ok(config);
     }
 
+    /**
+     * 更新规则
+     *
+     * @param cid
+     * @param request
+     * @return
+     */
     @AdminValid
     @PutMapping("/configs/{cid}")
     public ResponseEntity updateConfig(@PathVariable int cid,

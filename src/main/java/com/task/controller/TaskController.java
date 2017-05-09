@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 /**
+ * 表单相关 API
  * Created by blanke on 17-1-27.
  */
 @RestController
@@ -35,7 +36,7 @@ public class TaskController {
     @Autowired
     ConfigRepository configRepository;
     @Autowired
-    MailUtils mailUtils;
+    MailUtils mailUtils;//发送邮件的辅助类
 
     @TokenValid
     @GetMapping("/tasks")
@@ -54,24 +55,35 @@ public class TaskController {
             tasks = taskRepository.findByUsersAndTitleContainingAndPublishTimeGreaterThanEqual
                     (pageable, user, key, new Date());
         }
-        return ResponseEntity.ok(tasks.map(new Converter<Task, TaskListResponse>() {
+        //把 task 转化为TaskListResponse,只显示简要信息
+        Page<TaskListResponse> res = tasks.map(new Converter<Task, TaskListResponse>() {
             @Override
             public TaskListResponse convert(Task task) {
                 return TaskListResponse.wrap(task);
             }
-        }));
+        });
+        return ResponseEntity.ok(res);
     }
 
+    /**
+     * 获得表单详情
+     *
+     * @param taskId
+     * @param user
+     * @return
+     */
     @TokenValid
     @GetMapping("/task/{task_id}")
-    public ResponseEntity getTask(@PathVariable(value = "task_id") int taskId, User user) {
+    public ResponseEntity getTask(@PathVariable(value = "task_id") int taskId,
+                                  User user) {
         Task task = taskRepository.findOne(taskId);
         if (task == null) {
             return ResponseEntity.notFound().build();
         }
-        if (!user.isAdmin()) {
+        if (!user.isAdmin()) {//如果是普通,直接返回
             return ResponseEntity.ok(task);
         }
+        //如果是管理员,返回该表单总共有多少  内容 ,多少提交通过的,多少未审核的
         AdminTaskDetailResponse response = AdminTaskDetailResponse.wrap(task);
         List<Content> contents = contentRepository.findByTask(task);
         response.contentCount = contents.size();
@@ -88,6 +100,12 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * 获得该表单指派的用户
+     *
+     * @param taskId
+     * @return
+     */
     @AdminValid
     @GetMapping("/task/{task_id}/users")
     public ResponseEntity getTaskUsers(@PathVariable(value = "task_id") int taskId) {
@@ -98,6 +116,12 @@ public class TaskController {
         return ResponseEntity.ok(UserListResponse.wrap(task.getUsers()));
     }
 
+    /**
+     * 添加表单
+     *
+     * @param taskRequest
+     * @return
+     */
     @AdminValid
     @PostMapping("/tasks")
     public ResponseEntity addTask(@RequestBody AddTaskRequest taskRequest) {
@@ -160,6 +184,7 @@ public class TaskController {
         task.setDeadlineTime(deadlineTime);
         task.setUsers(users);
         taskRepository.save(task);
+        //保存 task 和 field 的关联
         for (Field field : fields) {
             field.setTask(task);
             fieldRepository.save(field);
@@ -176,6 +201,13 @@ public class TaskController {
         return ResponseEntity.ok(new BaseMessageResponse("新建表单成功"));
     }
 
+    /**
+     * 修改表单
+     *
+     * @param id
+     * @param taskRequest
+     * @return
+     */
     @AdminValid
     @PutMapping("/tasks/{id}")
     public ResponseEntity updateTask(@PathVariable int id,
@@ -251,9 +283,9 @@ public class TaskController {
         task.setUsers(users);
         taskRepository.save(task);
         task.getFields().removeAll(fields);
-        //删掉 该删掉的
+        //删掉 该删掉的字段
         fieldRepository.deleteInBatch(task.getFields());
-
+        //保存新的字段
         for (Field field : fields) {
             field.setTask(task);
             fieldRepository.save(field);
@@ -261,10 +293,15 @@ public class TaskController {
         return ResponseEntity.ok(new BaseMessageResponse("修改成功"));
     }
 
+    /**
+     * 删除表单
+     *
+     * @param id
+     * @return
+     */
     @AdminValid
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity deleteTask(@PathVariable int id) {
-        // TODO: 17-1-27 验证
         Task task = taskRepository.findOne(id);
         if (task == null) {
             return ResponseEntity.notFound().build();
@@ -273,10 +310,15 @@ public class TaskController {
         return ResponseEntity.ok(new BaseMessageResponse("删除成功"));
     }
 
+    /**
+     * 获得表单所有字段
+     *
+     * @param id
+     * @return
+     */
     @TokenValid
     @GetMapping("/tasks/{id}/fields")
     public ResponseEntity getTaskFields(@PathVariable int id) {
-        // TODO: 17-1-27 验证
         Task task = taskRepository.findOne(id);
         List<FieldDetailResponse> fields = new ArrayList<>();
         if (task != null) {
@@ -449,6 +491,14 @@ public class TaskController {
                 .body(ContentDetailResponse.wrap(content));
     }
 
+    /**
+     * 用户删除某个他提交的内容
+     *
+     * @param taskId
+     * @param contentId
+     * @param user
+     * @return
+     */
     @TokenValid
     @DeleteMapping("/tasks/{taskId}/contents/{contentId}")
     public ResponseEntity deleteTaskContents(@PathVariable int taskId,
@@ -457,7 +507,7 @@ public class TaskController {
         Task task = taskRepository.findOne(taskId);
         Content content = contentRepository.findOne(contentId);
         if (task != null && content != null) {
-            if (!user.equals(content.getUser())) {
+            if (!user.equals(content.getUser())) {//判断这个内容是不是自己提交的
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new BaseMessageResponse("禁止访问"));
             }
@@ -529,6 +579,13 @@ public class TaskController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * 取消收藏
+     *
+     * @param tid
+     * @param user
+     * @return
+     */
     @TokenValid
     @DeleteMapping("/tasks/{tid}/likes/")
     public ResponseEntity deleteLikeTask(@PathVariable int tid, User user) {

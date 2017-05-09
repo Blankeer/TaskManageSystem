@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.Random;
 
 /**
+ * 用户相关 API
  * Created by blanke on 17-1-25.
  */
 @RestController
@@ -44,6 +45,12 @@ public class UserController {
     @Autowired
     MailUtils mailUtils;
 
+    /**
+     * 生成 token 算法
+     *
+     * @param user
+     * @return
+     */
     public String getToken(User user) {
         return Md5Utils.md5(new Random().nextInt(1024) + user.getEmail()
                 + System.currentTimeMillis());
@@ -76,7 +83,7 @@ public class UserController {
         return dt < ProjectConfig.EXPIRE_CAPTCHA * 60 * 1000;
     }
 
-
+    // 清除 token
     public void clearToken(User user) {
         user.setToken("");
         userRepository.save(user);
@@ -109,7 +116,7 @@ public class UserController {
     }
 
     /**
-     * 根据 token 校验用户
+     * 根据 token 校验用户,返回用户详细信息
      *
      * @return
      */
@@ -143,10 +150,17 @@ public class UserController {
         user.setPwd(Md5Utils.md5(request.getPwd()));
         user.setActivate(true);
         user.setCaptcha("");
+        user.setCaptchaCreatedAt(null);
         userRepository.save(user);
         return ResponseEntity.ok(new BaseMessageResponse(""));
     }
 
+    /**
+     * 找回密码
+     *
+     * @param request
+     * @return
+     */
     @PostMapping("/find-pwd")
     public ResponseEntity findPwd(@RequestBody LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail());
@@ -170,10 +184,17 @@ public class UserController {
         user.setPwd(Md5Utils.md5(request.getPwd()));
         user.setActivate(true);
         user.setCaptcha("");
+        user.setCaptchaCreatedAt(null);
         userRepository.save(user);
         return ResponseEntity.ok(new BaseMessageResponse(""));
     }
 
+    /**
+     * 获得验证码
+     *
+     * @param account
+     * @return
+     */
     @GetMapping("/captcha")
     public ResponseEntity getCaptcha(@RequestParam String account) {
         User user = userRepository.findByEmail(account);
@@ -210,15 +231,21 @@ public class UserController {
     @GetMapping("/logout")
     public ResponseEntity logout(User user) {
         clearToken(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(new BaseMessageResponse(""));
     }
 
+    /**
+     * 修改密码
+     *
+     * @param user
+     * @param request
+     * @return
+     */
     @TokenValid
     @PutMapping("/change_pwd")
     public ResponseEntity changePwd(User user, @RequestBody ChangePwdRequest request) {
         if (TextUtils.isEmpty(request.getOldPwd())
                 || TextUtils.isEmpty(request.getNewPwd())) {
-            // TODO: 17-1-27 密码验证
             return ResponseEntity.badRequest()
                     .body(new BaseMessageResponse("旧密码或新密码为空"));
         }
@@ -231,13 +258,19 @@ public class UserController {
         return ResponseEntity.ok(new BaseMessageResponse("修改密码成功"));
     }
 
+    /**
+     * 修改昵称
+     *
+     * @param user
+     * @param nickname
+     * @return
+     */
     @TokenValid
     @PutMapping("/change_nickname")
     public ResponseEntity changeNickname(User user,
                                          @RequestParam(name = "nickname")
                                                  String nickname) {
         if (TextUtils.isEmpty(nickname)) {
-            // TODO: 17-1-27 昵称验证
             return ResponseEntity.badRequest()
                     .body(new BaseMessageResponse("昵称不规范"));
         }
@@ -246,6 +279,13 @@ public class UserController {
         return ResponseEntity.ok(new BaseMessageResponse("修改昵称成功"));
     }
 
+    /**
+     * 获得所有用户列表
+     *
+     * @param page
+     * @param size
+     * @return
+     */
     @AdminValid
     @GetMapping("/users")
     public ResponseEntity getUserList(@RequestParam(value = "page", defaultValue = "0")
@@ -263,6 +303,12 @@ public class UserController {
         return ResponseEntity.ok(res);
     }
 
+    /**
+     * 获得某个用户的详细信息
+     *
+     * @param uid
+     * @return
+     */
     @AdminValid
     @GetMapping("/users/{uid}")
     public ResponseEntity getUserDetail(@PathVariable int uid) {
@@ -273,6 +319,13 @@ public class UserController {
         return ResponseEntity.ok(UserListResponse.wrap(user));
     }
 
+    /**
+     * 修改用户信息
+     *
+     * @param uid
+     * @param request
+     * @return
+     */
     @AdminValid
     @PutMapping("/users/{uid}")
     public ResponseEntity updateUser(@PathVariable int uid,
@@ -287,6 +340,12 @@ public class UserController {
         return ResponseEntity.ok(UserListResponse.wrap(user));
     }
 
+    /**
+     * 删除用户
+     *
+     * @param uid
+     * @return
+     */
     @AdminValid
     @DeleteMapping("/users/{uid}")
     public ResponseEntity deleteUser(@PathVariable int uid) {
@@ -307,6 +366,12 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * 获得自己的详细信息
+     *
+     * @param user
+     * @return
+     */
     @TokenValid
     @GetMapping("/user/profile")
     public ResponseEntity getUserProfile(User user) {

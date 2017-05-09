@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 用户内容的相关 API
  * Created by blanke on 2017/3/19.
  */
 @RestController
@@ -57,11 +58,13 @@ public class ContentController {
     public ResponseEntity getTaskContentInfo(@PathVariable int id, User user) {
         Task task = taskRepository.findOne(id);
         if (task == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();//404
         }
         List<Content> contents = contentRepository.findByTaskAndUser(task, user);
         boolean submit = false;
         boolean verify = true;
+        //因为一个人可以对一个表单多次提交内容,这里的状态是总的状态
+        //即 如果提交了3个内容,只要有1条未审核就是未审核,已驳回同理
         if (contents.size() > 0) {
             submit = true;
             for (Content content : contents) {
@@ -143,6 +146,12 @@ public class ContentController {
         return ResponseEntity.ok("审核完成");
     }
 
+    /**
+     * 导出表单数据
+     *
+     * @param tid
+     * @return
+     */
     @AdminValid
     @GetMapping("/tasks/{tid}/contents/export")
     public ResponseEntity<Resource> exportContents(@PathVariable int tid) {
@@ -151,7 +160,8 @@ public class ContentController {
             return ResponseEntity.notFound().build();
         }
         String filename = task.getTitle() + ".xls";
-        HSSFWorkbook workbook = TaskExportUtils.exportTaskExcel(task);
+        HSSFWorkbook workbook = TaskExportUtils.exportTaskExcel(task);//excel 数据
+        //需要把 excel 数据,也就是输出流 发送给前端
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             workbook.write(bos);

@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * AOP, 管理员认证的具体逻辑
+ */
 @Aspect
 @Order(10)
 @Configuration
@@ -34,15 +37,13 @@ public class AdminAop {
     @Around(value = "adminPointCut()")
     public Object addTokenToMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
-        String token = request.getHeader(ProjectConfig.HEAD_TOKEN);
+        String token = request.getHeader(ProjectConfig.HEAD_TOKEN);//获得 Head 的 token
         User user = null;
-        if (TextUtils.isEmpty(token)) {
-//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            // TODO: 2017/3/18 test user
-            user = userRepository.findOne(1);//test
+        if (TextUtils.isEmpty(token)) {//token 为空
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             user = userRepository.findByToken(token);
-            if (null == user || !user.isAdmin()) {
+            if (null == user || !user.isAdmin()) {//token 找不到用户,或用户不是管理员
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         }
