@@ -30,7 +30,7 @@ $(function () {
             $('#wait_content_count').text(data.waitContentCount);
             $('#pass_content_count').text(data.passContentCount);
             task_expire = new Date() > new Date(data.deadlineTime);
-            if (task_expire) {
+            if (task_expire) {//任务过期了,隐藏 修改 提醒 按钮
                 $('#update').hide();
                 $('#notify').hide();
                 // $('#delete').hide();//隐藏修改 删除按钮

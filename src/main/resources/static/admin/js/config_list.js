@@ -18,6 +18,7 @@ $(document).ready(function () {
                 $('#dialog_config_reg').val(data.expression);
             });
             //更新
+            $('#dialog_config_submit').unbind("click");//取消之前的监听
             $('#dialog_config_submit').click(function () {
                 var data = {
                     'name': $('#dialog_config_name').val(),
@@ -30,6 +31,7 @@ $(document).ready(function () {
                 });
             });
             //删除
+            $('#config_delete').unbind("click");
             $('#config_delete').click(function () {
                 $.delete('/configs/' + click_config_id, function () {
                     $.msg_success("删除成功");
@@ -43,6 +45,7 @@ $(document).ready(function () {
             $('#dialog_config_reg').val('');
             $('#config_delete').hide();
             //add
+            $('#dialog_config_submit').unbind("click");
             $('#dialog_config_submit').click(function () {
                 var data = {
                     'name': $('#dialog_config_name').val(),

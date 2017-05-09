@@ -14,7 +14,7 @@ $(document).ready(function () {
         }
     });
     //弹出框  更新或删除用户
-    //更新
+    //点击更新按钮
     $('#dialog_user_submit').click(function () {
         var data = {
             'email': $('#dialog_user_email').val(),

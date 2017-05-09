@@ -3,8 +3,8 @@ var key = '';
 $(document).ready(function () {
 
     initPagination();
-    $('#search_text').change(function () {
-        key = $(this).val();
+    $('#search_text').change(function () {//搜索框输入文本之后,开始搜索
+        key = $(this).val();//搜索内容保存为全局变量
         initPagination();
     });
     //点击我的收藏

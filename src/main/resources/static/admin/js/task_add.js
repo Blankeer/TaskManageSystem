@@ -10,6 +10,7 @@ $(function () {
     $('#back').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
     });
+    //日期选择控件的初始化
     var datetimeOptions = {
         format: 'yyyy-mm-dd hh:ii',
         autoclose: true,

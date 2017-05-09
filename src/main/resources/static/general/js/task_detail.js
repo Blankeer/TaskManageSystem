@@ -3,9 +3,11 @@
  */
 var task_expire = false;//任务是否失效,即超过了截止时间
 $(function () {
+    //点击返回键跳转到表单列表页面
     $('#back').click(function () {
         $('#menuFrame', parent.document.body).attr('src', 'task_list.html')
     });
+    //那个表单的详情,就是这个 task_id
     var task_id = localStorage.getItem('click_task_id');
     $('#content_row_template').hide();//hide template
     if (task_id) {
@@ -16,11 +18,11 @@ $(function () {
             $('#task_start_time').text($.formatDate(data.publishTime));
             $('#task_end_time').text($.formatDate(data.deadlineTime));
             task_expire = new Date() > new Date(data.deadlineTime);
-            if (task_expire) {
+            if (task_expire) {//任务已经过期
                 $('#add_content_row').hide();//隐藏增加按钮
                 $.msg_waring("任务已经超过截止时间,只能查看数据")
             }
-            loadContntData();
+            loadContntData();//获得用户提交的数据并显示在界面上
         });
         //获得收藏状态
         initLikeState();
