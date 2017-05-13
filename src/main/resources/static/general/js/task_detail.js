@@ -1,4 +1,4 @@
-d/**
+/**
  * Created by blanke on 2017/4/4.
  */
 var task_expire = false;//任务是否失效,即超过了截止时间
