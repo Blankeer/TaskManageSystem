@@ -3,7 +3,7 @@
 <h3>${email} :</h3>
 
 <p>
-    ${nickName},你好!
+    ${nickName} 你好!
 </p>
 <p>
     你提交的表单(${taskName})${resultMsg}

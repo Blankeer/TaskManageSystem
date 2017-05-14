@@ -54,9 +54,11 @@ public class MailUtils {
     public boolean sendTaskAddEmail(Task task, User user) {
         Map<String, Object> contents = new HashMap<>();
         contents.put("email", user.getEmail());
-        if (user.getNickName() != null) {
-            contents.put("nickName", user.getNickName());
+        String nickName=user.getNickName();
+        if(nickName==null){
+            nickName="";
         }
+        contents.put("nickName", nickName);
         contents.put("taskName", task.getTitle());
         contents.put("endTime", DateUtils.formatData(task.getDeadlineTime()));
         return sendTemplateMail(user.getEmail(), "你有一个新的表单任务待提交",
@@ -73,9 +75,11 @@ public class MailUtils {
     public boolean sendTaskNotifyEmail(Task task, User user) {
         Map<String, Object> contents = new HashMap<>();
         contents.put("email", user.getEmail());
-        if (user.getNickName() != null) {
-            contents.put("nickName", user.getNickName());
+        String nickName=user.getNickName();
+        if(nickName==null){
+            nickName="";
         }
+        contents.put("nickName", nickName);
         contents.put("taskName", task.getTitle());
         contents.put("endTime", DateUtils.formatData(task.getDeadlineTime()));
         return sendTemplateMail(user.getEmail(),
@@ -93,17 +97,20 @@ public class MailUtils {
     public boolean sendTaskVerifyEmail(Task task, User user, boolean isVerify) {
         Map<String, Object> contents = new HashMap<>();
         contents.put("email", user.getEmail());
-        if (user.getNickName() != null) {
-            contents.put("nickName", user.getNickName());
+        String nickName=user.getNickName();
+        if(nickName==null){
+            nickName="";
         }
+        contents.put("nickName", nickName);
         contents.put("taskName", task.getTitle());
         String resultMsg = "已被管理员驳回,请尽快修改重新提交";
         if (isVerify) {
             resultMsg = "已被管理员审核通过!";
         }
+        contents.put("resultMsg", resultMsg);
         return sendTemplateMail(user.getEmail(),
                 "你的表单:" + task.getTitle() + " " + resultMsg,
-                "task_notify.vm", contents);
+                "task_verify.vm", contents);
     }
 
     /**

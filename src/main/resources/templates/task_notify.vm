@@ -2,7 +2,7 @@
 <body>
 <h3>${email} :</h3>
 <p>
-    ${nickName},你好!
+    ${nickName} 你好!
 </p>
 <p>
     由于该表单(${taskName}),你未提交或被驳回,管理员提醒你尽快提交表单,截止时间为${endTime}.
