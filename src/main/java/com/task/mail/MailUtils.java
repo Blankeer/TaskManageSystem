@@ -25,7 +25,7 @@ public class MailUtils {
     @Autowired
     private JavaMailSender javaMailSender;//spring 的 mail 库对象,spring-boot-starter-mail
     @Autowired
-    private VelocityEngine velocityEngine;//右键模板引擎,spring-boot-starter-velocity
+    private VelocityEngine velocityEngine;//邮件模板引擎,spring-boot-starter-velocity
     @Value("${spring.mail.username}")
     private String username;//application.properites 的属性读取出来,发件邮箱
 

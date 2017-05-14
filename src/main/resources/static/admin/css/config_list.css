@@ -1,5 +1,6 @@
 #table_config_list {
     width: 500px;
+    margin:auto;
 }
 
 th {
@@ -15,4 +16,8 @@ tr {
 
 tr:hover {
     background-color: #eee;
+}
+#links {text-align:center;width: 100%}
+ul{
+    margin: auto;
 }

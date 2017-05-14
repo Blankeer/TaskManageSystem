@@ -2,7 +2,7 @@ var InterValObj; //timer变量，控制时间
 var count = 60; //间隔函数，1秒执行
 var curCount;//当前剩余秒数
 $(document).ready(function () {
-    //检查 token 是否存在, token 是否与某个用户对应,如果 token 校验成功,直接跳转到主页
+    //检查 localstorage中token 是否存在, token 是否与某个用户对应,如果 token 校验成功,直接跳转到主页
     var token = $.getToken();
     if (token != null) {//token 存在的时候
         $.get('/token/check', function (data) {
@@ -113,7 +113,7 @@ function findPwd() {
     };
     $.post("/find-pwd", data, function (data) {
         $.msg_success("密码重置成功,请重新登录");
-        $('.a_login').click();
+        $('.a_login').click();//找回密码成功,切换到登录页面
     });
 }
 //倒计时, el 为倒计时按钮, defaultStr 是默认文本

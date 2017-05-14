@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by blanke on 17-1-25.
  */
 public interface TaskRepository extends PagingAndSortingRepository<Task, Integer> {
-    Page<Task> findByUsersAndTitleContainingAndPublishTimeGreaterThanEqual
+    Page<Task> findByUsersAndTitleContainingAndDeadlineTimeGreaterThanEqual
             (Pageable pageable, User user, String title, Date nowDate);
 
     //admin 调用,查看所有任务

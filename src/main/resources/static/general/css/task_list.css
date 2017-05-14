@@ -29,3 +29,7 @@ tr:hover {
 .task_label {
     line-height: 20px;
 }
+#links {text-align:center;width: 100%}
+ul{
+    margin: auto;
+}
