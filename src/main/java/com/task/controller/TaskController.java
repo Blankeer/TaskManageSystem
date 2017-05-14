@@ -52,7 +52,7 @@ public class TaskController {
         if (user.isAdmin()) {//管理员显示所有
             tasks = taskRepository.findByTitleContaining(pageable, key);
         } else {
-            tasks = taskRepository.findByUsersAndTitleContainingAndPublishTimeGreaterThanEqual
+            tasks = taskRepository.findByUsersAndTitleContainingAndDeadlineTimeGreaterThanEqual
                     (pageable, user, key, new Date());
         }
         //把 task 转化为TaskListResponse,只显示简要信息
