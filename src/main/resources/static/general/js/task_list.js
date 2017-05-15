@@ -14,7 +14,7 @@ $(document).ready(function () {
 });
 //初始化分页
 function initPagination() {
-    $('#pagination').twbsPagination('destroy');
+    $('#pagination').twbsPagination('destroy');//销毁分页插件，有几处会调用分页插件，如果已存在会报错
     getTask(0, size, key, function (data) {
         $('#pagination').twbsPagination({
             totalPages: data.totalPages,

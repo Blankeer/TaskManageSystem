@@ -32,7 +32,7 @@ $(document).ready(function () {
         $(".forget-form").show("fast");
         $(".forget-form-2").hide("fast");
     });
-    //具体点击登录,点击注册按钮的逻辑
+    //具体点击登录,点击注册,找回密码按钮的逻辑
     $('#bu_login').click(login);
     $('#findpwd_submit').click(findPwd);
     $('#bu_register').click(register);
