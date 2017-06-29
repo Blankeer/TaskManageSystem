@@ -152,7 +152,7 @@ public class ContentController {
      * @param tid
      * @return
      */
-    @AdminValid
+    //@AdminValid
     @GetMapping("/tasks/{tid}/contents/export")
     public ResponseEntity<Resource> exportContents(@PathVariable int tid) {
         Task task = taskRepository.findOne(tid);

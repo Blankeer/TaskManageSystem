@@ -5,7 +5,6 @@ $(document).ready(function () {
         localStorage.removeItem('click_task_id');//新增
         $('#menuFrame', parent.document.body).attr('src', 'task_add.html')
     });
-
     initPagination();
     $('#search_text').change(function () {
         key = $(this).val();

@@ -85,16 +85,16 @@ public class TaskController {
         }
         //如果是管理员,返回该表单总共有多少  内容 ,多少提交通过的,多少未审核的
         AdminTaskDetailResponse response = AdminTaskDetailResponse.wrap(task);
-        List<Content> contents = contentRepository.findByTask(task);
-        response.contentCount = contents.size();
+        List<Content> contents = contentRepository.findByTask(task);//task所对应的所有用户提交的内容
+        response.contentCount = contents.size();//总的内容总数
         response.passContentCount = response.dismissContentCount = response.waitContentCount = 0;
         for (Content content : contents) {
             if (content.getState() == 1) {
-                response.passContentCount++;
+                response.passContentCount++;//通过的内容数自增
             } else if (content.getState() == -1) {
-                response.dismissContentCount++;
+                response.dismissContentCount++;//未通过的总数自增
             } else {
-                response.waitContentCount++;
+                response.waitContentCount++;//待审核的数目自增
             }
         }
         return ResponseEntity.ok(response);
